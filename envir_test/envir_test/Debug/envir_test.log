@@ -1,0 +1,12 @@
+﻿  envir_test.cpp
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(27): error C3861: 'sort': identifier not found
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(30): error C3861: 'log2': identifier not found
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(33): warning C4554: '<<': check operator precedence for possible error; use parentheses to clarify precedence
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(33): error C3861: 'max': identifier not found
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(34): error C3861: 'max': identifier not found
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(23): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(25): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\lawre\desktop\pract\envir_test\envir_test\envir_test.cpp(26): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'

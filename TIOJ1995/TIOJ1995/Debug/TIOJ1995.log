@@ -1,0 +1,8 @@
+﻿  main.cpp
+c:\users\lawre\desktop\pract\tioj1995\tioj1995\main.cpp(32): warning C4554: '<<': check operator precedence for possible error; use parentheses to clarify precedence
+c:\users\lawre\desktop\pract\tioj1995\tioj1995\main.cpp(22): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\lawre\desktop\pract\tioj1995\tioj1995\main.cpp(24): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
+c:\users\lawre\desktop\pract\tioj1995\tioj1995\main.cpp(25): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1272): note: see declaration of 'scanf'
