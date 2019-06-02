@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1558942171 source:d:\github\practice\uva square\main.cpp
+	<iostream>
+	<vector>
+	<algorithm>
+
