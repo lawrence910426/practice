@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1560478686 source:d:\github\practice\apcs renting\main.cpp
+	<iostream>
+	<bitset>
+

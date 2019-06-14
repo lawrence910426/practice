@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1560414816 source:d:\github\practice\apcs ladder2\main.cpp
+	<iostream>
+	<vector>
+	<cstring>
+

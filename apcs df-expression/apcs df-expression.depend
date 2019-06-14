@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1560478324 source:d:\github\practice\apcs df-expression\main.cpp
+	<iostream>
+	<cstring>
+

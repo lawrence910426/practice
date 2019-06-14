@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1560438800 source:d:\github\practice\apcs reverse order pair\main.cpp
+	<iostream>
+	<memory.h>
+

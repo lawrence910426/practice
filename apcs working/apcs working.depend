@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1560437636 source:d:\github\practice\apcs working\main.cpp
+	<iostream>
+	<vector>
+	<memory.h>
+	<queue>
+

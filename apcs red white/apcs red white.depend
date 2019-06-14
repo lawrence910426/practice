@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1560482106 source:d:\github\practice\apcs red white\main.cpp
+	<iostream>
+	<memory.h>
+	<map>
+	<vector>
+	<set>
+
