@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1564636223 source:d:\github\practice\c455\main.cpp
+	<iostream>
+	<vector>
+	<queue>
+	<memory.h>
+
