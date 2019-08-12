@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1565605572 source:d:\github\practice\b397\main.cpp
+	<iostream>
+	<set>
+	<string>
+	<memory.h>
+	<assert.h>
+
