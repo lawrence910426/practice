@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1565271062 source:d:\github\practice\c204\main.cpp
+	<iostream>
+	<vector>
+	<memory.h>
+
