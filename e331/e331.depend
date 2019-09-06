@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1567243982 source:d:\github\practice\e331\main.cpp
+	<iostream>
+	<queue>
+	<memory.h>
+
