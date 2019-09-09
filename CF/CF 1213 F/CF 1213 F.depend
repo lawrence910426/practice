@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1568041154 source:d:\github\practice\cf\cf 1213 f\main.cpp
+	<iostream>
+	<set>
+	<algorithm>
+	<assert.h>
+
