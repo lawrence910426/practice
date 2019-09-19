@@ -22,7 +22,7 @@ bool hungarian(int on) {
     return false;
 }
 
-void greedy() {
+inline void greedy() {
     for(int i = 1;i <= p;i++) for(int val : edges[i]) {
         if(match[val] == -1 && match[i]) {
             match[val] = i;
@@ -41,6 +41,7 @@ int main() {
         cin >> p >> q >> k;
         for(i = 0;i < MAXN + MAXN;i++) edges[i] = vector<int>();
         memset(match ,-1 ,sizeof(match));
+        memset(visit ,0 ,sizeof(visit));
         for(i = 0;i < k;i++) {
             cin >> x >> y;
             edges[x].push_back(y + MAXN);
@@ -49,8 +50,10 @@ int main() {
         ans = 0;
         greedy();
         for(i = 1;i <= p;i++) {
-            memset(visit ,0 ,sizeof(visit));
-            if(hungarian(i)) ans += 1;
+            if(match[i] == -1 && hungarian(i)) {
+                memset(visit ,0 ,sizeof(visit));
+                ans += 1;
+            }
         }
         cout << ans << endl;
     }
