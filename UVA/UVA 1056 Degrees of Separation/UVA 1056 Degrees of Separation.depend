@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1569042532 source:d:\github\practice\uva\uva 1056 degrees of separation\main.cpp
+	<iostream>
+	<map>
+	<cstring>
+	<set>
+

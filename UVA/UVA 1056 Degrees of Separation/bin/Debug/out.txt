@@ -1,0 +1,33 @@
+Network 1: 2
+
+Network 2: DISCONNECTED
+
+Network 3: DISCONNECTED
+
+Network 4: 1
+
+Network 5: 2
+
+Network 6: DISCONNECTED
+
+Network 7: DISCONNECTED
+
+Network 8: DISCONNECTED
+
+Network 9: DISCONNECTED
+
+Network 10: 14
+
+Network 11: 3
+
+Network 12: DISCONNECTED
+
+Network 13: 2
+
+Network 14: 10
+
+Network 15: 3
+
+Network 16: DISCONNECTED
+
+Network 17: 2
