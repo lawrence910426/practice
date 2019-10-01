@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1569307888 source:d:\github\practice\zerojudge\c522\main.cpp
+	<iostream>
+	<ext/rope>
+
