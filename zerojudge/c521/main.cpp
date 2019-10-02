@@ -4,21 +4,32 @@ using namespace std;
 
 int data[200005];
 int main() {
-    int N ,M ,K ,ans;
-    int i ,ptr;
+    ios::sync_with_stdio(0) ,cin.tie(0) ,cout.tie(0);
+    int N ,M ,K ,ans ,modulo;
+    int i ,l ,r;
     while(cin >> N >> M >> K) {
         for(i = 0;i < N;i++) cin >> data[i];
-        ans = 0;
-        for(ptr = K;ptr < N;ptr += K * 2 + 1)
-            ans += data[ptr];
-        ptr -= K + 1;
-        if(ptr != N - 1) {
-            ans += data[N - 1];
+        if(N / (K * 2 + 1) == 0) ans = data[0];
+        else {
+            modulo = N % (K * 2 + 1);
+            if(modulo == 0) {
+                l = -1;
+                r = N;
+                ans = 0;
+            } else if(modulo <= K) {
+                ans = data[0] + data[N - modulo];
+                l = K;
+                r = N - modulo - K;
+            } else {
+                ans = data[modulo - K] + data[N - K];
+                l = modulo;
+                r = N - K - K;
+            }
+            for(l += K + 1;l < r;l += K * 2 + 1) ans += data[l];
         }
         cout << ans << endl;
     }
 }
-/* not done yet */
 /*
 6 2 1
 3 3 3 1 3 2
