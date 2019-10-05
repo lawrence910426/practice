@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1570167890 source:d:\github\practice\tioj\1037\main.cpp
+	<iostream>
+	<set>
+
