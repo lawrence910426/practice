@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1570642922 source:d:\github\practice\zerojudge\a480\main.cpp
+	<iostream>
+	<algorithm>
+	<memory.h>
+	<climits>
+
