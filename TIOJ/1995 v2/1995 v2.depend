@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1570605035 source:d:\github\practice\tioj\1995 v2\main.cpp
+	<stdio.h>
+	<bitset>
+
