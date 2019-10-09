@@ -33,8 +33,7 @@ int main() {
         init();
         while(Q--) {
             cin >> l >> r;
-            if(l > r) throw;
-            if(l <= 0 || N <= l || r <= 0 || N <= r) throw;
+            //if(N < l) throw;
             cout << query(l ,r) << endl;
         }
     }
