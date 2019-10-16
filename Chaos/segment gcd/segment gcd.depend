@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1570960570 source:d:\github\practice\chaos\segment gcd\main.cpp
+	<iostream>
+	<assert.h>
+
