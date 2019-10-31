@@ -2,14 +2,13 @@
 #include <set>
 
 const int MAXRANGE = 1e9+10;
-const int MAXNODE = 9e5+10;
-const int MAXN = 1e6+10;
+const int MAXNODE = 1e6+10;
+const int MAXN = 1e5+10;
 using namespace std;
 struct seg {
     int l ,r;
     int value ,tag;
     seg *left ,*right ,*parent;
-    set<int> performs;
 }data[MAXNODE];
 int nodes;
 pair<int ,int> ranges[MAXN];
@@ -21,7 +20,6 @@ void build(seg* father) {
     L->left = L->right = R->left = R->right = nullptr;
     L->l = father->l ,L->r = R->l = (father->l + father->r) >> 1 ,R->r = father->r;
     father->left = L ,father->right = R;
-    L->performs = set<int>() ,R->performs = set<int>();
     L->parent = R->parent = father;
 }
 
@@ -30,8 +28,6 @@ void modify(seg* on ,bool more ,int code) {
     if(R <= on->l || on->r <= L) return;
     if(L <= on->l && on->r <= R) {
         on->tag += (more ? 1 : -1);
-        if(more) on->performs.insert(code);
-        else on->performs.erase(code);
     } else {
         if(on->left == nullptr) build(on);
         modify(on->left ,more ,code);
@@ -53,8 +49,8 @@ seg* query(seg* on) {
 }
 
 int main() {
-    int N ,K ,code;
-    int i;
+    int N ,K ,code ,top;
+    int i ,j;
     seg *root ,*ans;
     ios::sync_with_stdio(0) ,cin.tie(0) ,cout.tie(0);
     while(cin >> N >> K) {
@@ -62,7 +58,6 @@ int main() {
         root->left = root->right = nullptr;
         root->l = -MAXRANGE ,root->r = MAXRANGE;
         root->value = root->tag = 0;
-        root->performs = set<int>();
         root->parent = root;
         nodes = 1;
 
@@ -73,8 +68,11 @@ int main() {
         }
         for(i = 0;i < K;i++) {
             ans = query(root);
-            while(ans->performs.size() == 0) ans = ans->parent;
-            code = *ans->performs.begin();
+            top = ans->l;
+            code = -1;
+            for(j = 0;j < N;j++) if(ranges[j].first <= top && top < ranges[j].second)
+                if(code == -1 || ranges[code].second - ranges[code].first < ranges[j].first - ranges[j].second)
+                    code = j;
             L = ranges[code].first ,R = ranges[code].second;
             modify(root ,false ,code);
         }

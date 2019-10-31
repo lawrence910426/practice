@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1572230946 source:d:\github\practice\cf\cf 1249 f v3\main.cpp
+	<iostream>
+	<vector>
+	<memory.h>
+
