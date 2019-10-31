@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1571895491 source:d:\github\practice\chaos\toi practice 2019-10-24\pa\main.cpp
+	<iostream>
+	<map>
+	<algorithm>
+
