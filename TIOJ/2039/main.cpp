@@ -15,6 +15,7 @@ struct seg {
     inline seg(seg s ,int ll ,int rr ,bool st): LL(ll) ,RR(rr) ,style(st) ,L(s.L) ,R(s.R) ,value(s.value) {}
     inline bool operator< (const seg& s) const { return value < s.value; }
 };
+inline seg max(seg a ,seg b) { return (a.value == b.value ? (a.R - a.L < b.R - b.L ? a : b) : (a < b ? b : a)); }
 inline seg max(seg a ,seg b ,seg c) { return max(a ,max(b, c)); }
 struct zkw {
     int mini ,maxi;
@@ -55,7 +56,7 @@ int main() {
     for(i = leaf - 1;i >= 1;i--) tree[i] = zkw(tree[i * 2] ,tree[i * 2 + 1]);
     pq.push(seg(query(0 ,N).RL ,0 ,N ,false));
     for(ans = 0;!pq.empty() && K--;) {
-        seg s = pq.top();
+        seg s = pq.top() ,tmp;
         pq.pop();
         ans += s.value;
         if(s.style) {
