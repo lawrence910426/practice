@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1572786890 source:d:\github\practice\chaos\drain ditches v3\main.cpp
+	<iostream>
+	<vector>
+	<bitset>
+
