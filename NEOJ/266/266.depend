@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1572713756 source:d:\github\practice\neoj\266\main.cpp
+	<iostream>
+	<map>
+	<cstring>
+
