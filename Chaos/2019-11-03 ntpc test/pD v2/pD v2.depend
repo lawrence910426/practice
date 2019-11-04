@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1572756005 source:d:\github\practice\chaos\2019-11-03 ntpc test\pd v2\main.cpp
+	<iostream>
+	<algorithm>
+	<random>
+
