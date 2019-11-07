@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1572857658 source:d:\github\practice\zerojudge\e526\main.cpp
+	<iostream>
+	<algorithm>
+	<sstream>
+	<float.h>
+	<stack>
+	<vector>
+
