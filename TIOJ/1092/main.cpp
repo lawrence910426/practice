@@ -7,25 +7,23 @@ using namespace std;
 const int MAXN = 1e4 + 10;
 int N ,E ,a ,b;
 vector<int> G_1[MAXN] ,G_2[MAXN];
-bitset<MAXN> visit;
 int status[MAXN];
+
 void preprocess(int on ,bool style) {
-    if(on == a) return;
     if(style) status[on] |= (1 << 0);
     else status[on] |= (1 << 1);
-    for(int V : G_1[on]) preprocess(V ,!style);
+    for(int V : G_1[on]) if((status[V] >> (style ? 1 : 0)) % 2 == 0) preprocess(V ,!style);
 }
 
 bool dfs(int on ,bool style) {
-    if(on == b) return true;
     if(style) {
-        for(int V : G_2[on]) if(status[V] == 2) return dfs(V ,!style);
-        for(int V : G_2[on]) if(status[V] == 3) return dfs(V ,!style);
-        return false;
+        if(status[on] == 1) return false;
+        if(status[on] == 2) return true;
+        if(status[on] == 3) return true;
     } else {
-        for(int V : G_2[on]) if(status[V] == 1) return dfs(V ,!style);
-        for(int V : G_2[on]) if(status[V] == 3) return dfs(V ,!style);
-        return false;
+        if(status[on] == 1) return true;
+        if(status[on] == 2) return false;
+        if(status[on] == 3) return false;
     }
 }
 

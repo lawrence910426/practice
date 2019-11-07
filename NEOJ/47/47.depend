@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1572685240 source:d:\github\practice\neoj\47\main.cpp
+	<iostream>
+	<random>
+	<cstring>
+

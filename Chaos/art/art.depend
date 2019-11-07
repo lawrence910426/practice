@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1573096164 source:d:\github\practice\chaos\art\main.cpp
+	<iostream>
+	<algorithm>
+	<memory.h>
+
