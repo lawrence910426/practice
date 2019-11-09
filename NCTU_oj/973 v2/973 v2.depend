@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1573180374 source:d:\github\practice\chaos\973 v2\main.cpp
+	<iostream>
+	<set>
+	<assert.h>
+

@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1573191404 source:d:\github\practice\nctu_oj\973\main.cpp
+	<iostream>
+	<assert.h>
+
