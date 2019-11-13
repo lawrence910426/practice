@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1573483352 source:d:\github\practice\atcoder\d - shortest path on a line\main.cpp
+	<iostream>
+	<algorithm>
+	<vector>
+	<memory.h>
+

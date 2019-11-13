@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1573352256 source:d:\github\practice\zerojudge\e331 v2\main.cpp
+	<iostream>
+	<bitset>
+	<vector>
+	<queue>
+	<memory.h>
+	<assert.h>
+
