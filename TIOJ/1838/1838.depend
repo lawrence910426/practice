@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1574001584 source:d:\github\practice\tioj\1838\main.cpp
+	<iostream>
+	<vector>
+	<bitset>
+
