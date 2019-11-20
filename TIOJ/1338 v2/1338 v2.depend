@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1574135614 source:d:\github\practice\tioj\1338 v2\main.cpp
+	"lib1338.h"
+	<algorithm>
+
+1574133930 d:\github\practice\tioj\1338 v2\lib1338.h
+	<stdio.h>
+	<stdlib.h>
+
