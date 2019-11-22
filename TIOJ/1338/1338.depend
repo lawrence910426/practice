@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1574131922 source:d:\github\practice\tioj\1338\main.cpp
+	"lib1338.h"
+	<memory.h>
+	<set>
+	<vector>
+	<algorithm>
+	<bitset>
+	<iostream>
+
+1574092966 d:\github\practice\tioj\1338\lib1338.h
+	<stdio.h>
+	<stdlib.h>
+

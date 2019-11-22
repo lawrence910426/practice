@@ -1,0 +1,29 @@
+///#pragma GCC optimize("Ofast,no-stack-protector")
+#include <iostream>
+#include <vector>
+
+using namespace std;
+const int MAXN = 5 + 5e6;
+struct answer {
+    constexpr answer():factor() ,prime() ,used() {
+        int i = 0 ,j = 0;
+        used = 0;
+        for(i = 0;i < MAXN;i++) prime[i] = 0;
+        for(i = 0;i < MAXN;i++) factor[i] = i;
+        for(i = 2;i < MAXN;i++) {
+            if(factor[i] == i) prime[used++] = i;
+            for(j = 0;j < used;j++) {
+                if(prime[j] * i >= MAXN) break;
+                factor[prime[j] * i] = prime[j];
+                if(i % prime[j] == 0) break;
+            }
+        }
+    }
+    int /*K[MAXN] ,*/factor[MAXN] ,prime[MAXN] ,used;
+    //int S_factors[MAXN] ,N_factors[MAXN];
+};
+int main() {
+    constexpr auto ans = answer();
+    cout << ans.used << endl;
+    for(int i = 0;i < 10;i++) cout << ans.prime[i] << endl;
+}

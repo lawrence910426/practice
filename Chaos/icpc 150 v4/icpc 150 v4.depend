@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1573294560 source:d:\github\practice\chaos\icpc 150 v4\main.cpp
+	<iostream>
+	<bitset>
+	<vector>
+	<memory.h>
+	<queue>
+

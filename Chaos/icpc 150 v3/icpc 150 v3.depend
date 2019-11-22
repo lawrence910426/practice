@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1573230076 source:d:\github\practice\chaos\icpc 150 v3\main.cpp
+	<iostream>
+	<algorithm>
+	<map>
+	<math.h>
+	<stdio.h>
+	<string.h>
+	<algorithm>
+	<vector>
+	<queue>
+	<stack>
+
