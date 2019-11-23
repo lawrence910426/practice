@@ -27,8 +27,6 @@ void build() {
         while(len > blocker && det(convex[len - 2] - convex[len - 1] ,data[i] - convex[len - 1]) <= 0) len--;
         convex[len++] = data[i];
     }
-    /*cout << "length: " << len << endl;
-    for(i = 0;i < len;i++) cout << convex[i].X << " " << convex[i].Y << " " << convex[i].code << endl;*/
 }
 
 long long ans ,ans_tmp;
