@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1574574652 source:d:\github\practice\zerojudge\e720\main.cpp
+	<iostream>
+	<bitset>
+	<vector>
+
