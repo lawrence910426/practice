@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1575715670 source:d:\github\practice\zerojudge\c423\main.cpp
+	<iostream>
+	<cstring>
+	<algorithm>
+	<vector>
+	<set>
+	<assert.h>
+

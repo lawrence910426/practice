@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1575194760 source:d:\github\practice\tioj\1306\main.cpp
+	<iostream>
+	<cstring>
+
