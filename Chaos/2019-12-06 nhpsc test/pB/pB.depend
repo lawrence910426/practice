@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1575610519 source:d:\github\practice\chaos\2019-12-06 nhpsc test\pb\egg.cpp
+	"Egg.h"
+
+1575568480 d:\github\practice\chaos\2019-12-06 nhpsc test\pb\egg.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1575610589 source:d:\github\practice\chaos\2019-12-06 nhpsc test\pb\grader.cpp
+
