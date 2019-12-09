@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1575901292 source:d:\github\practice\chaos\2019-09-11 nhpsc\land\land.cpp
+	"Land.h"
+	<iostream>
+
+1575706306 d:\github\practice\chaos\2019-09-11 nhpsc\land\land.h
+	<stdio.h>
+	<stdlib.h>
+
