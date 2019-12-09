@@ -8,15 +8,11 @@
 using namespace std;
 const int MAXN = 1005;
 
-bitset<MAXN> graph[MAXN];
-vector<int> G[MAXN];
-bitset<MAXN> articular;
-bitset<MAXN> visit;
+bitset<MAXN> graph[MAXN] ,articular ,visit ,bcc_check[MAXN];
+vector<int> G[MAXN] ,bcc[MAXN];
 int low[MAXN] ,dfn[MAXN] ,dft ,nbcc;
 stack<int> stk;
-set<int> bcc[MAXN];
-bitset<MAXN> color;
-bitset<MAXN> odd;
+bitset<MAXN> color ,odd;
 
 void dfs(int on ,int parent) {
     visit[on] = true;
@@ -29,8 +25,8 @@ void dfs(int on ,int parent) {
             dfs(V ,on);
             if(low[V] >= dfn[on]) {
                 if(parent != -1) articular[on] = true;
-                for(int x = 0;x != V;stk.pop()) x = stk.top() ,bcc[nbcc].insert(x);
-                bcc[nbcc++].insert(on);
+                for(int x = 0;x != V;stk.pop()) x = stk.top() ,bcc[nbcc].push_back(x) ,bcc_check[nbcc][x] = true;
+                bcc[nbcc].push_back(on) ,bcc_check[nbcc++][on] = true;
             } else {
                 low[on] = min(low[on] ,low[V]);
             }
@@ -42,13 +38,12 @@ void dfs(int on ,int parent) {
 }
 
 bool draw(int on ,int code ,bool col) {
-    if(bcc[code].find(on) == bcc[code].end()) return false;
-    if(visit[on]) return odd[on] = (color[on] != col);
+    if(!bcc_check[code][on]) return false;
+    if(visit[on]) return color[on] != col;
     visit[on] = true;
     color[on] = col;
-    bool result = false;
-    for(int V : G[on]) result |= draw(V ,code ,!col);
-    odd[on] = result;
+    for(int V : G[on]) if(draw(V ,code ,!col)) return true;
+    return false;
 }
 
 int main() {
@@ -56,9 +51,12 @@ int main() {
     int N ,M ,src ,dst ,ans;
     int i ,j;
     while(cin >> N >> M ,!(N == 0 && M == 0)) {
-        for(i = 0;i < MAXN;i++) G[i] = vector<int>();
-        for(i = 0;i < MAXN;i++) graph[i].reset();
-        for(i = 0;i < MAXN;i++) bcc[i] = set<int>();
+        for(i = 0;i < MAXN;i++) {
+            G[i] = vector<int>();
+            graph[i].reset();
+            bcc[i] = vector<int>();
+            bcc_check[i].reset();
+        }
         nbcc = ans = dft = 0;
         memset(low ,0 ,sizeof(low)), memset(dfn ,0 ,sizeof(dfn));
         articular.reset(), visit.reset();
@@ -66,16 +64,26 @@ int main() {
             cin >> src >> dst;
             graph[src][dst] = graph[dst][src] = true;
         }
-        for(i = 1;i <= N;i++) for(j = 1;j <= N;j++) if(!graph[i][j]) G[i].push_back(j);
+        for(i = 1;i <= N;i++) for(j = 1;j <= N;j++) if(!graph[i][j] && i != j) G[i].push_back(j);
         for(i = 1;i <= N;i++) if(!visit[i]) dfs(i ,-1);
+        odd.reset();
         for(i = 0;i < nbcc;i++) {
-            cout << "The cut vertex:" << endl;
-            for(int V : bcc[i]) cout << V << " ";
-            cout << endl;
-            visit.reset(), color.reset(), odd.reset();
-            draw(*bcc[i].begin() ,i ,true);
-            for(int V : bcc[i]) if(!odd[V]) ans += 1;
+            visit.reset(), color.reset();
+            bool result = draw(bcc[i][0] ,i ,true);
+            /*for(int item : bcc[i]) cout << item << " ";
+            cout << (result ? "T" : "F") << endl;*/
+            for(int item : bcc[i]) odd[item] = odd[item] || result;
         }
+        for(i = 1;i <= N;i++) if(!odd[i]) ans += 1;
         cout << ans << endl;
     }
 }
+/*
+5 5
+1 4
+1 5
+2 5
+3 4
+4 5
+0 0
+*/
