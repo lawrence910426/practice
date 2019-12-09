@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1575869159 source:d:\github\practice\chaos\2019-09-11 nhpsc\helicoptor\main.cpp
+	<iostream>
+	<vector>
+	<bitset>
+	<algorithm>
+
