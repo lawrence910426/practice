@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1575964875 source:d:\github\practice\chaos\2019-09-11 nhpsc\sequence v3\main.cpp
+	<iostream>
+	<vector>
+	<memory.h>
+	<assert.h>
+	<algorithm>
+
