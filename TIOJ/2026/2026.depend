@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1576051647 source:d:\github\practice\tioj\2026\main.cpp
+	<iostream>
+	<random>
+	<time.h>
+
