@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1576294892 source:d:\github\practice\tioj\1917 practice\main.cpp
+	<iostream>
+	<vector>
+	<memory.h>
+	<bitset>
+	<queue>
+	<stdio.h>
+
