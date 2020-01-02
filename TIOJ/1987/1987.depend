@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1577952606 source:d:\github\practice\tioj\1987\main.cpp
+	<iostream>
+	<cmath>
+	<algorithm>
+	"lib1987.h"
+
+1577952320 d:\github\practice\tioj\1987\lib1987.h
+	<stdio.h>
+	<stdlib.h>
+
