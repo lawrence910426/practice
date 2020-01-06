@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1578250396 source:d:\github\practice\tioj\1169 v2\main.cpp
+	<iostream>
+	<assert.h>
+	<algorithm>
+
