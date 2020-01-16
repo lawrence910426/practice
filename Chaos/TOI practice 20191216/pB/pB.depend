@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1577372266 source:d:\github\practice\chaos\toi practice 20191216\pb\main.cpp
+	<iostream>
+	<memory.h>
+
