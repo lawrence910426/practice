@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1576207139 source:d:\github\practice\chaos\2019-12-13 nhpsc practice\p5\main.cpp
+	<iostream>
+	<algorithm>
+	<vector>
+

@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1576203844 source:d:\github\practice\chaos\2019-12-13 nhpsc practice\p4\main.cpp
+	<iostream>
+	<vector>
+	<bitset>
+
