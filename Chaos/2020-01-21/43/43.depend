@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1579606971 source:d:\github\practice\chaos\2020-01-21\43\main.cpp
+	<iostream>
+	<vector>
+	<algorithm>
+

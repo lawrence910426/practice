@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1579435454 source:d:\github\practice\chaos\2020-01-19\20\main.cpp
+	<iostream>
+	<random>
+	<time.h>
+
