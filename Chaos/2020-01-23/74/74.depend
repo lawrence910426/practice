@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1579749991 source:d:\github\practice\chaos\2020-01-23\74\main.cpp
+	<iostream>
+	<cstring>
+	<queue>
+	<vector>
+	<memory.h>
+

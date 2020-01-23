@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory.h>
 using namespace std;
-const int WORDS = 26 ,MAXN = 3.5e5 ,root = 0 ,MAXR = 1e5;
+const int WORDS = 26 ,MAXN = 7e6 ,root = 0 ,MAXR = 3e6 + 500;
 struct trie {
     int parent ,kids[WORDS] ,fail;
     vector<int> emit;
@@ -66,17 +66,20 @@ void exec(string &s) {
 }
 int main() {
     ios::sync_with_stdio(0) ,cin.tie(0);
-    string A ,B;
-    int T ,N ,i;
-    for(cin >> T;T--;) {
+    string S ,T ,tmp;
+    int Q ,N ,i ,l ,r;
+    cin >> S >> T;
+    {
         used = 1;
         graph[root] = trie();
-        cin >> A >> N;
-        for(i = 0;i < N;i++) {
-            cin >> B;
-            try { insert(B ,i); } catch(exception e) { return -1; }
+        cin >> Q;
+        for(i = 0;i < Q;i++) {
+            tmp = "";
+            for(cin >> l >> r;l <= r;l++) tmp += T[l - 1];
+            try { insert(tmp ,i); } catch(exception e) { return -1; }
         }
-        init() ,exec(A);
-        for(i = 0;i < N;i++) cout << result[i] << '\n';
+        init();
+        exec(S);
+        for(i = 0;i < Q;i++) cout << result[i] << '\n';
     }
 }
