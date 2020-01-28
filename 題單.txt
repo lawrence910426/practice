@@ -1,8 +1,7 @@
 http://judge.ioicamp.org:2020/problems/57
 http://judge.ioicamp.org:2020/problems/61
-http://judge.ioicamp.org:2020/problems/75
 http://judge.ioicamp.org:2020/problems/71
-http://judge.ioicamp.org:2020/problems/78
+http://judge.ioicamp.org:2020/problems/75
 http://judge.ioicamp.org:2020/problems/81
 http://judge.ioicamp.org:2020/problems/83
 
