@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1580219816 source:d:\github\practice\cf\786 b\main.cpp
+	<iostream>
+	<vector>
+	<queue>
+	<bitset>
+	<assert.h>
+
