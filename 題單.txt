@@ -13,3 +13,4 @@ http://judge.ioicamp.org:2020/problems/83
 https://hackmd.io/jI-7jR1uTf2GWa59ma8zVA?view&fbclid=IwAR0tjjXy3_5am2s7uze17TudOutkB2Z-DOMjUGYRD3S5jXuLGC771tp6iTk
 
 Link-Cut Tree
+斜率優化 - APIO Commando
