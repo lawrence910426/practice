@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1580979128 source:d:\github\practice\luogu\p4234\main.cpp
+	<iostream>
+	<algorithm>
+	<set>
+	<memory.h>
+	<assert.h>
+
