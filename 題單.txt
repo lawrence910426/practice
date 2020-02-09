@@ -1,20 +1,25 @@
 http://judge.ioicamp.org:2020/problems/57
 dijkstra + implementation
 
-http://judge.ioicamp.org:2020/problems/71
-水題，判斷是不是兩坨 distinct 完全圖
-
 http://judge.ioicamp.org:2020/problems/78
 segment tree 建圖
 
 http://judge.ioicamp.org:2020/problems/83
 毒瘤數論 + dp + Combinatrics
 
-https://hackmd.io/jI-7jR1uTf2GWa59ma8zVA?view&fbclid=IwAR0tjjXy3_5am2s7uze17TudOutkB2Z-DOMjUGYRD3S5jXuLGC771tp6iTk
 
-Link-Cut Tree
+
+
+https://hackmd.io/jI-7jR1uTf2GWa59ma8zVA?view&fbclid=IwAR0tjjXy3_5am2s7uze17TudOutkB2Z-DOMjUGYRD3S5jXuLGC771tp6iTk
 
 斜率優化 - APIO Commando
 
-SG Value
-這東西十之八九要讀論文，幹你娘數奧
+SG Value 這東西十之八九要讀論文，幹你娘數奧
+
+https://codeforces.com/problemset/problem/1288/E
+莫隊 - https://blog.csdn.net/qq_21433411/article/details/103996733
+Segment Tree - 想法大同小異
+Treap + Pointers - 毒瘤如我的想法
+
+https://codeforces.com/problemset/problem/1296/F 
+裸 Link-Cut Tree
