@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1581579440 source:d:\github\practice\chaos\fibheap\main.cpp
+	<iostream>
+	<cmath>
+	<memory.h>
+
