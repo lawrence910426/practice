@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1582003291 source:d:\github\practice\tioj\1745\main.cpp
+	<iostream>
+	<queue>
+	<assert.h>
+
