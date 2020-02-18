@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1579938179 source:d:\github\practice\zerojudge\a007 vwtf\main.cpp
+	<iostream>
+	<string>
+	<algorithm>
+	<iomanip>
+	<cmath>
+	<vector>
+	<queue>
+
