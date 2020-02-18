@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1581236586 source:d:\github\practice\chaos\dinic\main.cpp
+	<iostream>
+	<bitset>
+	<vector>
+	<queue>
+	<memory.h>
+

@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1580375382 source:d:\github\practice\ioi camp\61\main.cpp
+	<iostream>
+	<memory.h>
+	<vector>
+	<algorithm>
+

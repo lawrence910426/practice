@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1580660042 source:d:\github\practice\chaos\splay tree\main.cpp
+	<iostream>
+	<cstdlib>
+
