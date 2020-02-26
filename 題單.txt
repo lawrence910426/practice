@@ -1,6 +1,3 @@
-http://judge.ioicamp.org:2020/problems/57
-dijkstra + implementation
-
 http://judge.ioicamp.org:2020/problems/78
 segment tree 建圖
 
