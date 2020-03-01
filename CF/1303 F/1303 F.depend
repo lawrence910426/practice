@@ -1,8 +1,9 @@
 # depslib dependency file v1.0
-1582262856 source:d:\github\practice\cf\1303 f\main.cpp
+1582299264 source:d:\github\practice\cf\1303 f\main.cpp
 	<iostream>
 	<memory.h>
 	<algorithm>
 	<vector>
 	<bitset>
+	<algorithm>
 
