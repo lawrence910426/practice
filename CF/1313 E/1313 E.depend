@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1582880286 source:d:\github\practice\cf\1313 e\main.cpp
+	<iostream>
+	<cstring>
+	<queue>
+	<algorithm>
+	<assert.h>
+	<list>
+

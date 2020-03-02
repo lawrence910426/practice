@@ -2,31 +2,34 @@
 #include <iostream>
 #include <memory.h>
 #include <algorithm>
-#include <vector>
-#include <bitset>
+#include <list>
 
 using namespace std;
 
-const int MAXQ = 2e6 + 50 ,MAXN = 3e2 + 50;
-
-int N ,M ,Q ,mapa[MAXN][MAXN] ,dx[4] = {0 ,0 ,1 ,-1} ,dy[4] = {1 ,-1 ,0 ,0} ,prefix[MAXQ];
-struct { int x ,y ,c ,ans; } Query[MAXQ];
-struct { vector<int> in ,out; } Event[MAXQ];
+const int MAXQ = 3e6 + 50 ,MAXN = 3e2 + 50 ,dx[4] = {0 ,0 ,1 ,-1} ,dy[4] = {1 ,-1 ,0 ,0};
+int N ,M ,Q ,mapa[MAXN][MAXN] ,prefix[MAXQ];
+struct { int x ,y ,c; } Query[MAXQ];
+struct { list<int> in ,out; } Event[MAXQ];
 struct Joint {
-    int boss[MAXN * MAXN];
+    int boss[MAXN * MAXN] ,deg[MAXN * MAXN];
     inline int Query(int x) { return (boss[x] == x ? x : boss[x] = Query(boss[x])); }
-    inline bool Join(int a ,int b) { a = Query(a); b = Query(b); boss[a] = b; return a != b; }
-    Joint() { for(int i = 0;i < MAXN * MAXN;i++) boss[i] = i; }
+    inline bool Join(int a ,int b) {
+        a = Query(a); b = Query(b);
+        if(a == b) return false;
+        if(deg[a] > deg[b]) swap(a ,b);
+        if(deg[a] == deg[b]) deg[b] += 1;
+        boss[a] = b; return true;
+    }
 } DSU;
 
-bitset<MAXN * MAXN> used;
-inline void Process(vector<int> &V ,int style) {
-    DSU = Joint(); used.reset();
+bool used[MAXN * MAXN];
+inline void Process(list<int> &V ,int style) {
+    for(int i = 0;i < N * M;i++) { used[i] = false; DSU.boss[i] = i; DSU.deg[i] = 1; }
     if(style == -1) reverse(V.begin() ,V.end());
-    int diff ,x ,y ,xx ,yy;
+    int diff ,x ,y ,xx ,yy ,k;
     for(int i : V) {
         diff = 1; x = Query[i].x; y = Query[i].y; used[x * M + y] = true;
-        for(int k = 0;k < 4;k++) {
+        for(k = 0;k < 4;k++) {
             xx = x + dx[k]; yy = y + dy[k];
             if(xx < 0 || xx >= N || yy < 0 || yy >= M || !used[xx * M + yy]) continue;
             if(DSU.Join(x * M + y ,xx * M + yy)) diff -= 1;
@@ -34,12 +37,9 @@ inline void Process(vector<int> &V ,int style) {
         prefix[i] += diff * style;
     }
 }
-
 inline void gin(int &a){ a = 0; for(char c;c = getchar() ,c >= '0' && c <= '9';a = a * 10 + c - '0') ; }
-
 int main() {
-    int i ,colors = -1 ,pole ,ans;
-    memset(prefix ,0 ,sizeof(prefix));
+    int i ,colors = -1 ,pole ,ans; memset(prefix ,0 ,sizeof(prefix));
     gin(N); gin(M); gin(Q);
     for(i = 0;i < N * M;i++) {
         Query[i].x = i / M; Query[i].y = i % M; Query[i].c = 0;
@@ -48,10 +48,11 @@ int main() {
     }
     for(pole = i;i < Q + pole;i++) {
         gin(Query[i].x); gin(Query[i].y); gin(Query[i].c); Query[i].x -= 1; Query[i].y -= 1;
+        if(mapa[Query[i].x][Query[i].y] == Query[i].c) continue;
         Event[mapa[Query[i].x][Query[i].y]].out.push_back(i);
         mapa[Query[i].x][Query[i].y] = Query[i].c;
         Event[Query[i].c].in.push_back(i);
-        colors = max(colors ,Query[i].c); Query[i].ans = 0;
+        colors = max(colors ,Query[i].c);
     }
     for(pole = i;i < N * M + pole;i++) {
         Query[i].x = (i - pole) / M; Query[i].y = (i - pole) % M;
