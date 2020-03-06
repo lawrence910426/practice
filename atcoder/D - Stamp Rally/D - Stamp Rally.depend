@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1583241926 source:d:\github\practice\atcoder\d - stamp rally\main.cpp
+	<iostream>
+	<memory.h>
+	<algorithm>
+	<vector>
+

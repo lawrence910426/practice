@@ -13,19 +13,24 @@ const long long inv() {
     return ans;
 }
 
-long long N ,i ,j ,ans ,sum;
+long long N ,i ,j ,ans ,sum ,a ,b ,c;
 int main() {
-    ios::sync_with_stdio(0); cin.tie(0);
     while(cin >> N) {
-        ans = (N * N) % mod;
+        ans = ((N % mod) * (N % mod)) % mod;
         for(i = 1;i <= N;i = j + 1) {
             j = N / (N / i);
-            sum = ((i + j) * inv()) % mod;
-            sum = (sum * (j - i + 1)) % mod;
-            ans -= ((N / i) * sum) % mod;
+
+            a = (i + j) % mod;
+            b = (j - i + 1) % mod;
+            c = (N / i) % mod;
+
+            sum = (a * b) % mod;
+            sum = (sum * inv()) % mod;
+            ans -= (c * sum) % mod;
+
             ans = ans % mod;
         }
         ans = (ans + mod) % mod;
-        cout << ans << endl;
+        cout << ans << '\n';
     }
 }

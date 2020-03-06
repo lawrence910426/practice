@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1583249482 source:d:\github\practice\atcoder\agc002_d\main.cpp
+	<iostream>
+	<memory.h>
+	<algorithm>
+
