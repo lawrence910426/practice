@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1583558902 source:d:\github\practice\zerojudge\c316\main.cpp
+	<iostream>
+	<algorithm>
+	<queue>
+	<vector>
+

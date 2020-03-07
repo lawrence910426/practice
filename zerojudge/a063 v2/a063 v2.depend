@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1583573454 source:d:\github\practice\zerojudge\a063 v2\main.cpp
+	<iostream>
+	<random>
+	<memory.h>
+

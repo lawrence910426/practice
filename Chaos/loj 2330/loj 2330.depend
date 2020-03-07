@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1583510538 source:d:\github\practice\chaos\loj 2330\main.cpp
+	<iostream>
+	<algorithm>
+	<memory.h>
+

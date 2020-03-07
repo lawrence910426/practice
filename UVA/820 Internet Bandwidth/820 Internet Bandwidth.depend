@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1583553954 source:d:\github\practice\uva\820 internet bandwidth\main.cpp
+	<iostream>
+	<queue>
+	<bitset>
+	<memory.h>
+	<ostream>
+
