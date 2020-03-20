@@ -18,3 +18,9 @@ Treap + Pointers - 毒瘤如我的想法
 
 https://codeforces.com/problemset/problem/1296/F 
 裸 Link-Cut Tree
+
+
+
+毒瘤升學講義
+https://zerojudge.tw/ShowProblem?problemid=e930
+https://zerojudge.tw/ShowProblem?problemid=e928
