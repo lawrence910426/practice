@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1584513053 source:d:\github\practice\luogu\p2216\main.cpp
+	<iostream>
+	<deque>
+	<vector>
+
