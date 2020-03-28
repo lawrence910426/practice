@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1585238546 source:d:\github\practice\cf\1328 d v2\main.cpp
+	<iostream>
+	<deque>
+	<memory.h>
+
