@@ -1,10 +1,12 @@
+#pragma GCC optimize("Ofast,no-stack-protector")
+
 #include <iostream>
 #include <memory.h>
 #include <vector>
 #include <queue>
 #include <bitset>
 using namespace std;
-const int MAXV = 5005, MAXE = 5000, INF = (1LL << 31) - 1, SRC = 5001, DST = 5002;
+const int MAXV = 2602, MAXE = 2e4, INF = (1LL << 31) - 1, SRC = 2600, DST = 2601;
 
 class Dinic {
     int ptr[MAXV] ,used = 0, depth[MAXV], src, dst;
@@ -25,11 +27,11 @@ class Dinic {
         return visit[dst];
     }
     int dfs(int on, int flow) {
-        if(on == dst) return flow;
+        if(on == dst || flow == 0) return flow;
         int ans = 0;
         for(int& i = ptr[on];i < G[on].size();i++) {
             E edg = Edge[G[on][i]];
-            if(depth[edg.src] == depth[edg.dst] + 1 && flow > 0) {
+            if(depth[edg.src] == depth[edg.dst] - 1) {
                 int temp = dfs(edg.dst, min(flow, edg.cap - edg.flow));
                 flow -= temp;
                 Edge[G[on][i]].flow += temp;
@@ -43,7 +45,7 @@ class Dinic {
 public:
     struct E { int src, dst, cap, flow; } Edge[MAXE];
     Dinic() {
-        memset(Edge, 0, sizeof(Edge)); used = 0;
+        used = 0;
         for(int i = 0;i < MAXV;i++) G[i] = vector<int>();
     }
     void AddEdge(int src, int dst, int cap) {
@@ -63,15 +65,24 @@ public:
 } Flow;
 
 int main() {
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     int T, N, M, A, B, MaxFlow; int i, j;
-    for(cin >> T;T--;) {
+    for(T = 100;T--;) {
         Flow = Dinic();
-        cin >> N >> M >> A >> B;
+        //cin >> N >> M >> A >> B;
+        N = M = 50; A = B = 25;
+        for(i = 0;i < N;i++) for(j = 0;j < M;j++) Flow.AddEdge(i * M + j, N * M + j, 1);
         for(i = 0;i < N;i++) Flow.AddEdge(SRC, i * M, A);
         for(i = 0;i < N;i++) for(j = 0;j < M - 1;j++) Flow.AddEdge(i * M + j, i * M + j + 1, INF);
-        for(i = 0;i < N;i++) for(j = 0;j < M;j++) Flow.AddEdge(i * M + j, N * M + j, INF);
         for(j = 0;j < M;j++) Flow.AddEdge(N * M + j, DST, B);
         MaxFlow = Flow.MaxFlow(SRC, DST);
-        cout << (MaxFlow == M * B && MaxFlow == N * A ? "YES" : "NO") << endl;
+        if(MaxFlow == M * B && MaxFlow == N * A) {
+            //cout << "YES\n";
+            for(i = 0;i < N;i++) {
+                //for(j = 0;j < M;j++) Flow.Edge[(i * M + j) * 2].flow = 1;
+                //cout << '\n';
+            }
+        } else { /*cout << "NO\n";*/ }
     }
+    cout << "q" << endl;
 }
