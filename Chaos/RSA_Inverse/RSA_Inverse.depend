@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1590204530 source:d:\github\practice\chaos\rsa_inverse\main.cpp
+	<iostream>
+	<vector>
+	<memory.h>
+
