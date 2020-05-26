@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1590474520 source:d:\github\practice\cf\1360 h\main.cpp
+	<iostream>
+	<algorithm>
+	<vector>
+
