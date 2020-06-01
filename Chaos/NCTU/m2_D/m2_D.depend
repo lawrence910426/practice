@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1590998983 source:d:\github\practice\chaos\nctu\m2_d\main.cpp
+	<iostream>
+	<set>
+	<map>
+
