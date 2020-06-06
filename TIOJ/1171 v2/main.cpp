@@ -1,8 +1,11 @@
+#pragma GCC optimize("Ofast")
 #include <iostream>
+#include <bitset>
 
 using namespace std;
 const int MAXN = 1e5 + 50, ROOT = 0;
 long long weight[MAXN]; int edge[MAXN][2];
+bitset<MAXN> used;
 class LinkCutTree {
     struct {
         int kid[2], par, rev;
@@ -76,15 +79,19 @@ public:
         Pull_Up(b);
     }
     long long Sum(int a, int b) { Make_Root(a); Access(b); Splay(b); return node[b].ans; }
+    long long Weight(int a, int b) { Make_Root(a); Access(b); Splay(b); return node[b].weight_sum; }
 } LCT;
+
 int main() {
+    ios::sync_with_stdio(0); cin.tie(0);
     int N, Q, cmd ,pos; cin >> N >> Q;
+    long long blacks = 0, points = 0;
     for(int i = 1;i < N;i++) cin >> edge[i][0] >> edge[i][1] >> weight[i];
-    LCT = LinkCutTree();
+    LCT = LinkCutTree(); used.reset();
     for(int i = 1;i < N;i++) LCT.Link(edge[i][0], edge[i][1]);
     while(Q--) {
         cin >> cmd >> pos;
-        if(cmd == 1) LCT.Tag(pos, ROOT);
-        if(cmd == 2) cout << LCT.Sum(pos, ROOT) << endl;
+        if(cmd == 1 && !used[pos]) { LCT.Tag(pos, ROOT); points += 1; blacks += LCT.Weight(pos, ROOT); used[pos] = true; }
+        if(cmd == 2) cout << points * LCT.Weight(pos, ROOT) + blacks - LCT.Sum(pos, ROOT) * 2 << '\n';
     }
 }
