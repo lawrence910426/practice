@@ -4,25 +4,20 @@ import random
 from base64 import b64decode, b64encode
 from Crypto.Util import Counter
 from Crypto.Cipher import Blowfish
+# from secret import FLAG
 
 p = open('user.pickle','rb').read()
-
-# with open('test.pickle', 'wb') as handle:
-#     payload = [{'name':'A', 'password':'A'} for _ in range(12)]
-#     payload.append('A' * 13)
-#     pickle.dump(payload, handle, protocol=pickle.HIGHEST_PROTOCOL)
-# pp = open('test.pickle','rb').read()
-
-# print(len(p), len(pp))
-
+p = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 key = os.urandom(8)
 iv = random.randint(0, 2**64)
 
 ctr = Counter.new(64, initial_value=iv, little_endian=True)
 cipher = Blowfish.new(key, Blowfish.MODE_CTR, counter=ctr)
 
-TOKEN = cipher.encrypt(p)
-
+TOKEN = bytearray(cipher.encrypt(p))
+TOKEN[0] ^= ord('a') ^ ord('b')
+TOKEN[1] ^= ord('a') ^ ord('c')
+TOKEN = bytes(TOKEN)
 print('''
                          .
                           A       ;
@@ -51,22 +46,23 @@ print('''
 ''')
 
 print("Your token:", b64encode(TOKEN).decode(), end="\n\n")
-username = input('username : ')
-password = input('password : ')
-TOKEN    = input("TOKEN : ")
+# username = input('username : ')
+#password = input('password : ')
+# TOKEN    = input("TOKEN : ")
 
 ctr = Counter.new(64, initial_value=iv, little_endian=True)
 cipher = Blowfish.new(key, Blowfish.MODE_CTR, counter=ctr)
 print()
 try :
-    objs = pickle.loads(cipher.decrypt(b64decode(TOKEN)))
+    temp = cipher.decrypt(TOKEN)
+    print(temp)
+    objs = pickle.loads(temp)
     for obj in objs :
-        print(obj)
         if obj['name'] == username :
             if obj['name'] == username and obj['password'] == password :
                 print(f"Welcome {obj['name']},")
                 if obj['admin'] :
-                    print("Here is your flag: {FLAG}")
+                    print(f"Here is your flag: {FLAG}")
                 print("Goodbye, See you again.")
             else :
                 print("Failed to login.")
