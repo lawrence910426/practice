@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1591497397 source:d:\github\practice\chaos\mfctf t-rex\main.cpp
+	<iostream>
+	<map>
+	<cstring>
+
