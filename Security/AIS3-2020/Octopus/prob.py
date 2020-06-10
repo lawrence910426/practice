@@ -1,6 +1,6 @@
 import random
 import numpy as np
-# from secret import FLAG, key_exchange
+from secret import FLAG, key_exchange
 
 LENGTH = 1024
 
