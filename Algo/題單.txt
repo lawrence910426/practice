@@ -24,3 +24,17 @@ https://codeforces.com/problemset/problem/1296/F
 毒瘤升學講義
 https://zerojudge.tw/ShowProblem?problemid=e930
 https://zerojudge.tw/ShowProblem?problemid=e928
+
+
+
+Suffix Array
+https://www.luogu.com.cn/problem/P4051
+
+Suffix Array & Math
+https://tioj.ck.tp.edu.tw/problems/1927
+
+Suffix Automata
+https://tioj.ck.tp.edu.tw/problems/1306
+
+Manacher Algo
+https://leetcode.com/problems/longest-palindromic-substring/
