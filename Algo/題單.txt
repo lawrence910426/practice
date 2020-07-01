@@ -35,6 +35,3 @@ https://tioj.ck.tp.edu.tw/problems/1927
 
 Suffix Automata
 https://tioj.ck.tp.edu.tw/problems/1306
-
-Manacher Algo
-https://leetcode.com/problems/longest-palindromic-substring/
