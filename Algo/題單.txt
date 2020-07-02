@@ -20,9 +20,5 @@ https://codeforces.com/problemset/problem/1296/F
 裸 Link-Cut Tre
 
 
-
-Suffix Array & Math
-https://tioj.ck.tp.edu.tw/problems/1927
-
 Suffix Automata
 https://tioj.ck.tp.edu.tw/problems/1306
