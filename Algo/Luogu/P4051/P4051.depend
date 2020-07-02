@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1593587094 source:d:\github\practice\algo\luogu\p4051\main.cpp
+	<iostream>
+	<vector>
+	<algorithm>
+	<cstring>
+

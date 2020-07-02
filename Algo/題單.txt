@@ -17,18 +17,9 @@ Segment Tree - 想法大同小異
 Treap + Pointers - 毒瘤如我的想法
 
 https://codeforces.com/problemset/problem/1296/F 
-裸 Link-Cut Tree
+裸 Link-Cut Tre
 
 
-
-毒瘤升學講義
-https://zerojudge.tw/ShowProblem?problemid=e930
-https://zerojudge.tw/ShowProblem?problemid=e928
-
-
-
-Suffix Array
-https://www.luogu.com.cn/problem/P4051
 
 Suffix Array & Math
 https://tioj.ck.tp.edu.tw/problems/1927

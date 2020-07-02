@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1593581558 source:d:\github\practice\algo\tioj\1924\main.cpp
+	<iostream>
+	<algorithm>
+
