@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1593935968 source:d:\github\practice\algo\tioj\1306 suffix automata\main.cpp
+	<iostream>
+	<memory.h>
+

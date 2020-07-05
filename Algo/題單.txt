@@ -19,6 +19,3 @@ Treap + Pointers - 毒瘤如我的想法
 https://codeforces.com/problemset/problem/1296/F 
 裸 Link-Cut Tre
 
-
-Suffix Automata
-https://tioj.ck.tp.edu.tw/problems/1306
