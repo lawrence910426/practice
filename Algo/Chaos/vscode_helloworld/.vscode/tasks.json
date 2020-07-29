@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build",
+        "type": "shell",
+        "command": "g++.exe",
+        "args": ["${workspaceFolder}/main.cpp", "-o", "${workspaceFolder}/main.exe"]
+      },
+      {
+        "label": "run",
+        "type": "shell",
+        "command": "${workspaceFolder}/main.exe"
+      },
+      {
+        "label": "build and run",
+        "type": "shell",
+        "dependsOn": ["build", "run"],
+        "dependsOrder": "sequence",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }
