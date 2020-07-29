@@ -45,3 +45,4 @@ def append_result(title, content, ans):
 	file_output.flush()
 
 get_index("%E9%9F%93%E5%9C%8B%E7%91%9C")
+keywords = ['韓國瑜', '中國', '疫情', '蔡英文', '陳菊', '監察院院長']
