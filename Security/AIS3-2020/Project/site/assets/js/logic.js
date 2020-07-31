@@ -20,10 +20,17 @@ $(document).ready(function() {
             url: "/result",
             status: $(this).attr("code")
         }).always(function(resp) {
-            
             setTimeout(function() {
                 $('#Reply').modal('hide');
+                $('#IDK').modal('show');
+                $("#some_text").text(resp);
             }, 1000)
         })
+    })
+    $("#Finish").click(function() {
+        $('#IDK').modal('hide');
+        setTimeout(function() {
+            history.go(0)
+        }, 0)
     })
 })
