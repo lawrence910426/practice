@@ -6,7 +6,7 @@ file_pos = "temp.csv"
 file_output = open(file_pos,"w+")
 
 def get_index(key_word):
-	for i in range(2, 3):
+	for i in range(2, 15):
 		url = "https://udn.com/api/more?page=" + str(i) + "&id=search:" + key_word + "&channelId=2&type=searchword&last_page=999"
 		resp = requests.get(url)
 		resp = resp.json()
@@ -36,13 +36,15 @@ def get_content(link):
 	return (title, content)
 
 def append_result(title, content, ans):
-	file_output.write(title.replace(',', ''))
+	file_output.write(title.replace(',', '').replace('\n', ''))
 	file_output.write(",")
-	file_output.write(content.replace(',', ''))
+	file_output.write(content.replace(',', '').replace('\n', ''))
 	file_output.write(",")
 	file_output.write(ans)
 	file_output.write("\n")
 	file_output.flush()
 
-get_index("%E9%9F%93%E5%9C%8B%E7%91%9C")
 keywords = ['韓國瑜', '中國', '疫情', '蔡英文', '陳菊', '監察院院長']
+for word in keywords:
+	get_index(word)
+
