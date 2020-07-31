@@ -1,5 +1,4 @@
 import jieba
-#　from gensim.test.utils import common_texts, get_tmpfile
 import pandas
 import logging
 import numpy as np
@@ -8,9 +7,10 @@ import csv
 
 def preprocess(data_set, model_name):
     corpus = []
-    with open(data_set, newline='') as csvfile:
-        for row in csvfile:
-            corpus.append(row)
+    for file_name in data_set:
+        with open("words/" + file_name, newline='') as csvfile:
+            for row in csvfile:
+                corpus.append(row)
         
     jieba_sliced = [jieba.cut(item, cut_all=False) for item in corpus]
     metadata = []
@@ -23,13 +23,27 @@ def preprocess(data_set, model_name):
     model.save(model_name)
 
 def query(model, queries):
-    model = word2vec.Word2Vec.load(model)
     return [model.wv.most_similar(item) for item in queries]
 
-# preprocess('people.csv', 'people.model')
-questions = ['人民', '疫情', '新冠']
-for item in questions:
-    print("=======================")
-    print(item)
-    print(pandas.DataFrame(query('people.model', [item])[0]))
-    print("=======================")
+def train():
+    preprocess(["Blue_1.csv", "Blue_2.csv"], "Blue.model")
+    preprocess(["Green_1.csv", "Green_2.csv"], "Green.model")
+    preprocess(["Red_1.csv", "Red_2.csv", "Red_3.csv"], "Red.model")
+
+def question():
+    questions = ['人民', '疫情', '新冠', '肺炎']
+    model = {
+        "Green": word2vec.Word2Vec.load('Green.model'),
+        "Blue": word2vec.Word2Vec.load('Blue.model'),
+        "Red": word2vec.Word2Vec.load('Red.model')
+    }
+    for item in questions:
+        print("=======================")
+        print(item)
+        print(pandas.DataFrame(query(model["Blue"], [item])[0]))
+        print(pandas.DataFrame(query(model["Green"], [item])[0]))
+        print(pandas.DataFrame(query(model["Red"], [item])[0]))
+        print("=======================")
+
+# train()
+question()
