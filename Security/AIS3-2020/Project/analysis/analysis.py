@@ -26,9 +26,9 @@ def query(model, queries):
     return [model.wv.most_similar(item) for item in queries]
 
 def train():
-    preprocess(["Blue_1.csv", "Blue_2.csv"], "Blue.model")
-    preprocess(["Green_1.csv", "Green_2.csv"], "Green.model")
-    preprocess(["Red_1.csv", "Red_2.csv", "Red_3.csv"], "Red.model")
+    preprocess(["Blue_1.csv"], "Blue.model")
+    preprocess(["Green_1.csv"], "Green.model")
+    preprocess(["Red_1.csv"], "Red.model")
 
 def question():
     questions = ['人民', '疫情', '新冠', '肺炎']

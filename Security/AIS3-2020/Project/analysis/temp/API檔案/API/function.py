@@ -4,10 +4,12 @@ from tensorflow import keras
 import jieba_fast.posseg as pseg
 
 class LSTM_Model:
-    def query(title, content):
+    def __init__(self):
         # 載入模型
-        model = load_model('my_model.h5')
+        self.model = load_model('my_model.h5')
 
+    def query(self, title, content):
+        
         def jieba_tokenizer(text):
             words = pseg.cut(text)
             return ' '.join([word for word, flag in words if flag != 'x'])
@@ -41,7 +43,7 @@ class LSTM_Model:
         x2_test = keras.preprocessing.sequence.pad_sequences(x2_test, maxlen=MAX_SEQUENCE_LENGTH2)
 
         # 利用已訓練的模型做預測
-        predictions = model.predict([x1_test, x2_test])
+        predictions = self.model.predict([x1_test, x2_test])
         print(predictions)
         m1 = predictions[0][0]
         m2 = predictions[0][1]
@@ -49,8 +51,8 @@ class LSTM_Model:
 
         ina = max(m1, m2, m3)
         if ina == m1:
-            return "Green"
+            return "green"
         elif ina == m2:
-            return "Blue"
+            return "blue"
         else:
-            return "Red"
+            return "red"
