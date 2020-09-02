@@ -5,12 +5,12 @@
         "label": "build",
         "type": "shell",
         "command": "g++.exe",
-        "args": ["${workspaceFolder}/main.cpp", "-o", "${workspaceFolder}/main.exe"]
+        "args": ["${workspaceFolder}/${fileBasename}", "-o", "${workspaceFolder}/${fileBasenameNoExtension}.exe"]
       },
       {
         "label": "run",
         "type": "shell",
-        "command": "${workspaceFolder}/main.exe"
+        "command": "${workspaceFolder}/${fileBasenameNoExtension}.exe"
       },
       {
         "label": "build and run",
