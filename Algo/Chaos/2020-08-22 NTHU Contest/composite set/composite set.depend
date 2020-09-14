@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1598083446 source:d:\github\practice\algo\chaos\2020-08-22 nthu contest\composite set\main.cpp
+	<iostream>
+	<time.h>
+	<random>
+
