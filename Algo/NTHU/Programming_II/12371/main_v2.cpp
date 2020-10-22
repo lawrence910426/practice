@@ -31,8 +31,7 @@ int main() {
         for(prefix[0] = i = 0;i < hay.size();i++) prefix[i + 1] = prefix[i] + (Z[i + needle.size() + 1] == needle.size() ? 1 : 0);
         for(ans = 0;Q--;) {
             cin >> l >> r;
-            if(r - needle.size() + 1 < 1) continue;
-            ans = max(ans, prefix[r - needle.size() + 1] - prefix[l - 1]);
+            if(r - needle.size() + 1 >= 1) ans = max(ans, prefix[r - needle.size() + 1] - prefix[l - 1]);
         }
         cout << ans << '\n';
     }
