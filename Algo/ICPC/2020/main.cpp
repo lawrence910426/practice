@@ -20,7 +20,7 @@ unsigned long long F(unsigned long long N, unsigned long long system) {
     vector<bool> used = vector<bool>(digit.size(), false);
 
     unsigned long long ans = 1;
-    for(unsigned long long i = 1;i < digit.size() && i <= system;i++) ans += P(system, digit.size() - i) - P(system - 1, digit.size() - 1 - i);
+    for(unsigned long long i = 1;i < digit.size();i++) ans += P(system, digit.size() - i) - P(system - 1, digit.size() - 1 - i);
     for(unsigned long long i = 0;i < digit.size();i++) {
         for(int j = 0;j < digit[i];j++) {
             if((i == 0 && j == 0) || used[j]) continue;
