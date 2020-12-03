@@ -1,6 +1,6 @@
 #include <iostream>
+#include <cstring>
 #include <memory.h>
-#include <vector>
 #include <algorithm>
 
 using namespace std;
@@ -8,7 +8,7 @@ using namespace std;
 const int MAXN = 5e3 + 10;
 
 class BigInt {
-	vector<int> storage = vector<int>(MAXN, 0);
+	int storage[MAXN];
 	void Inverse() {
 		int remain = 10;
 		for(int i = 0;i < MAXN;i++) {
@@ -20,7 +20,7 @@ class BigInt {
 	static bool is_number(char c) { return '0' <= c && c <= '9'; }
 public:
 	BigInt() { }
-	BigInt(const BigInt& clone) { storage = vector<int>(clone.storage); }
+	BigInt(const BigInt& clone) { memcpy(storage, clone.storage, sizeof(storage)); }
 	friend istream& operator >> (istream&, BigInt&);
 	friend ostream& operator << (ostream&, BigInt);	
 	BigInt operator + (const BigInt&);
@@ -45,13 +45,12 @@ BigInt BigInt::operator - (const BigInt& item) {
 }
 
 istream& operator >> (istream& is, BigInt& item) {
-	item.storage = vector<int>(MAXN, 0);
-	char temp = '\0';
-	if(!is.eof() && !BigInt::is_number(is.peek())) is.get(temp);
-	bool neg = (temp == '-');
-	int N = 0;
-	while(is.get(temp) && BigInt::is_number(temp)) item.storage[N++] = temp - '0';
-	reverse(item.storage.begin(), item.storage.begin() + N);
+	memset(item.storage, 0, sizeof(item.storage));
+	string s;
+	is >> s;
+	bool neg = (s[0] == '-');
+	reverse(s.begin() + (neg ? 1 : 0), s.end());
+	for(int i = (neg ? 1 : 0);i < s.size();i++) item.storage[i - (neg ? 1 : 0)] = s[i] - '0';
 	if(neg) item.Inverse();
 	return is;
 }
