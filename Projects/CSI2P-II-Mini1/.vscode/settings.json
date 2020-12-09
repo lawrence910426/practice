@@ -1,0 +1,30 @@
+{
+    "files.associations": {
+        "random": "cpp",
+        "iostream": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "bitset": "cpp",
+        "unordered_map": "cpp",
+        "atomic": "c",
+        "cstddef": "c",
+        "cwchar": "c",
+        "vector": "c",
+        "memory": "c",
+        "memory_resource": "c",
+        "type_traits": "c",
+        "istream": "c",
+        "new": "c",
+        "ostream": "c",
+        "sstream": "c",
+        "stdexcept": "c",
+        "regex": "c",
+        "utility": "c",
+        "optional": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "functional": "c",
+        "tuple": "c"
+    }
+}
