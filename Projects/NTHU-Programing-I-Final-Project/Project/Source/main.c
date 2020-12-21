@@ -7,6 +7,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_audio.h>
+#include <allegro5/mouse.h>
 #include <allegro5/allegro_acodec.h>
 #include <math.h>
 
@@ -16,6 +17,8 @@
 // If defined, logs will be shown on console and written to file.
 // If commented out, logs will not be shown nor be saved.
 #define LOG_ENABLED
+
+extern volatile int mouse_b;
 
 /* Constants. */
 
@@ -170,8 +173,10 @@ void game_abort(const char* format, ...);
 void game_log(const char* format, ...);
 // Log using va_list.
 void game_vlog(const char* format, va_list arg);
-
 void game_update_calls();
+void main_scene_start();
+void score_board();
+
 
 int main(int argc, char** argv) {
     // Set random seed for better random outcome.
@@ -266,18 +271,6 @@ void game_init(void) {
 
     /* Menu Scene resources*/
     main_img_background = load_bitmap_resized("main-bg.jpg", SCREEN_W, SCREEN_H);
-
-    int i;
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].health = 3;
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].x = 30;
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].y = i * 10;
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].hidden = false;
-    for(i = 0;i < MAX_ENEMY_BULLET;i++) enemy_bullet[i].hidden = true;
-    for(i = 0;i < MAX_ENEMY_BULLET;i++) {
-        enemy_bullet[i].img = al_load_bitmap("rocket-1.png");
-        enemy_bullet[i].h = al_get_bitmap_height(enemy_bullet[i].img);
-        enemy_bullet[i].w = al_get_bitmap_width(enemy_bullet[i].img);
-    }
 
 
 #ifdef audio
@@ -428,8 +421,11 @@ void game_update(void) {
         // 6) Set hidden to false (recycle the bullet) and set its x, y to the
         //    front part of your plane.
         // Uncomment and fill in the code below.
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state(&state);
+
         double now = al_get_time();
-        if (key_state[ALLEGRO_KEY_SPACE] && now - last_shoot_timestamp >= MAX_COOLDOWN) {
+        if ((key_state[ALLEGRO_KEY_SPACE] || (state.buttons & 1)) && now - last_shoot_timestamp >= MAX_COOLDOWN) {
             int i;
             for (i = 0; i < MAX_BULLET; i++) {
                 if (bullets[i].hidden) {
@@ -477,6 +473,8 @@ void game_draw(void) {
         for (i = 0; i < MAX_ENEMY_BULLET; i++)
             if(!enemy_bullet[i].hidden)
                 draw_movable_object(enemy_bullet[i]);
+
+        score_board();
     }
     // [HACKATHON 3-9]
     // TODO: If active_scene is SCENE_SETTINGS.
@@ -527,7 +525,7 @@ void game_change_scene(int next_scene) {
         al_stop_sample(&main_bgm_id);
         game_log("stop audio (bgm)");
 #endif
-
+        main_scene_start();
     } else if (active_scene == SCENE_START) {
 #ifdef audio
         al_stop_sample(&start_bgm_id);
@@ -542,33 +540,6 @@ void game_change_scene(int next_scene) {
             game_abort("failed to play audio (bgm)");
 #endif
     } else if (active_scene == SCENE_START) {
-        int i;
-        plane.img = start_img_plane;
-        plane.x = 400;
-        plane.y = 500;
-        plane.w = al_get_bitmap_width(plane.img);
-        plane.h = al_get_bitmap_height(plane.img);
-        for (i = 0; i < MAX_ENEMY; i++) {
-            enemies[i].img = start_img_enemy;
-            enemies[i].w = al_get_bitmap_width(start_img_enemy);
-            enemies[i].h = al_get_bitmap_height(start_img_enemy);
-            enemies[i].x = 30;
-            enemies[i].y = i * 20;
-        }
-        // [HACKATHON 2-6]
-        // TODO: Initialize bullets.
-        // For each bullets in array, set their w and h to the size of
-        // the image, and set their img to bullet image, hidden to true,
-        // (vx, vy) to (0, -3).
-        // Uncomment and fill in the code below.
-        for (i = 0; i < MAX_BULLET; i++) {
-            bullets[i].w = al_get_bitmap_width(img_bullet);
-            bullets[i].h = al_get_bitmap_height(img_bullet);
-            bullets[i].img = img_bullet;
-            bullets[i].vx = 0;
-            bullets[i].vy = -10;
-            bullets[i].hidden = true;
-        }
 
 #ifdef audio
         if (!al_play_sample(start_bgm, 1, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &start_bgm_id))
@@ -687,19 +658,13 @@ void game_vlog(const char* format, va_list arg) {
 
 
 
+int score;
 
-
-// Allows enemies to move randomly.
 void enemy_trajectory();
-// Kill the enemy which is touched by bullets.
-void kill_enemy();
-// Spawn the enemy randomly.
-bool spawn_enemy();
-// Kill the plane when touched by enemies
-void kill_plane();
-
+void kill_enemy(); // Kill the enemy which is touched by bullets.
+bool spawn_enemy(); // Spawn the enemy randomly.
+void kill_plane(); // Kill the plane when touched by enemies
 void physics_engine();
-
 void enemy_attack();
 
 void game_update_calls() {
@@ -757,7 +722,10 @@ void kill_enemy() {
                     }
 
             if(collision) enemies[i].health -= 1;
-            if(enemies[i].health < 0) enemies[i].hidden = true;
+            if(enemies[i].health < 0) {
+                enemies[i].hidden = true;
+                score += 5;
+            }
         }
     }
 }
@@ -788,20 +756,15 @@ void kill_plane() {
 }
 
 void kill_bullets() {
-    int i, j;
-    for(i = 0;i < MAX_BULLET;i++){
-        if(!enemy_bullet[i].hidden) {
-            bool collision = false;
-            int x, y;
-            for(x = enemy_bullet[i].x;x <= enemy_bullet[i].x + enemy_bullet[i].w;x++)
-                for(y = enemy_bullet[i].y;y <= enemy_bullet[i].y + enemy_bullet[i].h;y++)
-                    for(j = 0;j < MAX_BULLET;j++)
-                        collision |= pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !bullets[j].hidden && !enemy_bullet[i].hidden;
-
-            if(collision) {
-                bullets[j].hidden = true;
-                enemy_bullet[i].hidden = true;
-            }
+    int i, j, x, y;
+    for(i = 0;i < MAX_BULLET;i++) for(j = 0;j < MAX_ENEMY_BULLET;j++) {
+        bool collision = false;
+        for(x = bullets[i].x; x <= bullets[i].x + bullets[i].w; x++) for(y = bullets[i].y; y <= bullets[i].y + bullets[i].h; y++)
+            collision |= pnt_in_rect(x, y, enemy_bullet[j].x, enemy_bullet[j].y, enemy_bullet[j].w, enemy_bullet[j].h) && !bullets[i].hidden && !enemy_bullet[j].hidden;
+        if(collision) {
+            bullets[i].hidden = true;
+            enemy_bullet[j].hidden = true;
+            score += 1;
         }
     }
 }
@@ -874,3 +837,57 @@ void physics_engine() {
             bullets[i].hidden = true;
     }
 }
+
+void main_scene_start() {
+    score = 0;
+    int i;
+    plane.img = start_img_plane;
+    plane.x = 400;
+    plane.y = 500;
+    plane.w = al_get_bitmap_width(plane.img);
+    plane.h = al_get_bitmap_height(plane.img);
+    plane.health = 3;
+
+    for (i = 0; i < MAX_ENEMY; i++) {
+        enemies[i].img = start_img_enemy;
+        enemies[i].w = al_get_bitmap_width(start_img_enemy);
+        enemies[i].h = al_get_bitmap_height(start_img_enemy);
+        enemies[i].x = 30;
+        enemies[i].y = i * 20;
+    }
+    // [HACKATHON 2-6]
+    // TODO: Initialize bullets.
+    // For each bullets in array, set their w and h to the size of
+    // the image, and set their img to bullet image, hidden to true,
+    // (vx, vy) to (0, -3).
+    // Uncomment and fill in the code below.
+    for (i = 0; i < MAX_BULLET; i++) {
+        bullets[i].w = al_get_bitmap_width(img_bullet);
+        bullets[i].h = al_get_bitmap_height(img_bullet);
+        bullets[i].img = img_bullet;
+        bullets[i].vx = 0;
+        bullets[i].vy = -10;
+        bullets[i].hidden = true;
+    }
+
+    for(i = 0;i < MAX_ENEMY;i++) enemies[i].health = 3;
+    for(i = 0;i < MAX_ENEMY;i++) enemies[i].x = 30;
+    for(i = 0;i < MAX_ENEMY;i++) enemies[i].y = i * 10;
+    for(i = 0;i < MAX_ENEMY;i++) enemies[i].hidden = false;
+    for(i = 0;i < MAX_ENEMY_BULLET;i++) enemy_bullet[i].hidden = true;
+    for(i = 0;i < MAX_ENEMY_BULLET;i++) {
+        enemy_bullet[i].img = al_load_bitmap("rocket-1.png");
+        enemy_bullet[i].h = al_get_bitmap_height(enemy_bullet[i].img);
+        enemy_bullet[i].w = al_get_bitmap_width(enemy_bullet[i].img);
+    }
+}
+
+void score_board() {
+    al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), SCREEN_W, 0, ALLEGRO_ALIGN_RIGHT , "SCORE: %d", score);
+    al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), SCREEN_W, SCREEN_H - 32, ALLEGRO_ALIGN_RIGHT , "REMAINING LIVES: %d", plane.health);
+}
+
+
+
+
+

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/lawrence910426/Desktop/github/ProgrammingI_FinalProject/Project/Source/main.c
+/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/Source/main.c
 stdio.h
 -
 allegro5/allegro.h
@@ -20,6 +20,8 @@ allegro5/allegro_font.h
 allegro5/allegro_ttf.h
 -
 allegro5/allegro_audio.h
+-
+allegro5/mouse.h
 -
 allegro5/allegro_acodec.h
 -

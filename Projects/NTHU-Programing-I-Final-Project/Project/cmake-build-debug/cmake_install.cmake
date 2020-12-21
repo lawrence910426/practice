@@ -1,4 +1,4 @@
-# Install script for directory: /home/lawrence910426/Desktop/github/ProgrammingI_FinalProject/Project
+# Install script for directory: /home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/lawrence910426/Desktop/github/ProgrammingI_FinalProject/Project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
