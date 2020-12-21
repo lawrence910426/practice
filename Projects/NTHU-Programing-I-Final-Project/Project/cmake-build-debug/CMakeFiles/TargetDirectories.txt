@@ -1,0 +1,3 @@
+/home/lawrence910426/Desktop/github/ProgrammingI_FinalProject/Project/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/lawrence910426/Desktop/github/ProgrammingI_FinalProject/Project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/lawrence910426/Desktop/github/ProgrammingI_FinalProject/Project/cmake-build-debug/CMakeFiles/Project.dir

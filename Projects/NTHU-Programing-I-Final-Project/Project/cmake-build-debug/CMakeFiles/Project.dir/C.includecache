@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lawrence910426/Desktop/github/ProgrammingI_FinalProject/Project/Source/main.c
+stdio.h
+-
+allegro5/allegro.h
+-
+allegro5/allegro_primitives.h
+-
+allegro5/allegro_image.h
+-
+allegro5/allegro_font.h
+-
+allegro5/allegro_ttf.h
+-
+allegro5/allegro_audio.h
+-
+allegro5/allegro_acodec.h
+-
+math.h
+-
+
