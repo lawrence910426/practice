@@ -1,5 +1,6 @@
 // [main.c]
 // this template is provided for the 2D shooter game.
+#include "IO.h"
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -126,6 +127,7 @@ MovableObject bullets[MAX_BULLET];
 const float MAX_COOLDOWN = 0.2;
 double last_shoot_timestamp;
 
+MovableObject boss;
 /* Declare function prototypes. */
 
 // Initialize allegro5 library
@@ -175,8 +177,7 @@ void game_log(const char* format, ...);
 void game_vlog(const char* format, va_list arg);
 void game_update_calls();
 void main_scene_start();
-void score_board();
-
+void render_main();
 
 int main(int argc, char** argv) {
     // Set random seed for better random outcome.
@@ -259,7 +260,9 @@ void allegro5_init(void) {
 }
 
 void game_init(void) {
+
     srand(0);
+    boss.hidden = true;
     /* Shared resources*/
     font_pirulen_32 = al_load_font("pirulen.ttf", 32, 0);
     if (!font_pirulen_32)
@@ -271,7 +274,6 @@ void game_init(void) {
 
     /* Menu Scene resources*/
     main_img_background = load_bitmap_resized("main-bg.jpg", SCREEN_W, SCREEN_H);
-
 
 #ifdef audio
     main_bgm = al_load_sample("S31-Night Prowler.ogg");
@@ -457,24 +459,7 @@ void game_draw(void) {
         else
             al_draw_bitmap(img_settings, SCREEN_W - 48, 10, 0);
     } else if (active_scene == SCENE_START) {
-        int i;
-        al_draw_bitmap(start_img_background, 0, 0, 0);
-        // [HACKATHON 2-9]
-        // TODO: Draw all bullets in your bullet array.
-        // Uncomment and fill in the code below.
-        for (i = 0;i < MAX_BULLET; i++)
-            if(!bullets[i].hidden)
-                al_draw_bitmap(bullets[i].img, bullets[i].x, bullets[i].y, 0);
-
-        draw_movable_object(plane);
-        for (i = 0; i < MAX_ENEMY; i++)
-            draw_movable_object(enemies[i]);
-
-        for (i = 0; i < MAX_ENEMY_BULLET; i++)
-            if(!enemy_bullet[i].hidden)
-                draw_movable_object(enemy_bullet[i]);
-
-        score_board();
+        render_main();
     }
     // [HACKATHON 3-9]
     // TODO: If active_scene is SCENE_SETTINGS.
@@ -657,24 +642,53 @@ void game_vlog(const char* format, va_list arg) {
 }
 
 
-
+float time_coefficient = 1;
 int score;
+int history_high_score;
+
+#define MAX_BOSS_BULLETS 100
+MovableObject boss_bullets[MAX_BOSS_BULLETS];
 
 void enemy_trajectory();
-void kill_enemy(); // Kill the enemy which is touched by bullets.
-bool spawn_enemy(); // Spawn the enemy randomly.
+void plane_bullet_effects(); // Kill the enemy which is touched by bullets.
+void spawn_enemy(); // Spawn the enemy randomly.
 void kill_plane(); // Kill the plane when touched by enemies
 void physics_engine();
 void enemy_attack();
+void spawn_boss();
+void move_boss();
+void boss_shoot_bullet();
+void plane_ultimate(); // Time slow.
+void save_score();
+
+void kill_bullets();
 
 void game_update_calls() {
     enemy_trajectory();
     spawn_enemy();
-    kill_enemy();
+    plane_bullet_effects();
     kill_plane();
     physics_engine();
     enemy_attack();
     kill_bullets();
+    spawn_boss();
+    move_boss();
+    boss_shoot_bullet();
+    plane_ultimate();
+}
+
+void kill_bullets() {
+    int i, j, x, y;
+    for(i = 0;i < MAX_BULLET;i++) for(j = 0;j < MAX_ENEMY_BULLET;j++) {
+            bool collision = false;
+            for(x = bullets[i].x; x <= bullets[i].x + bullets[i].w; x++) for(y = bullets[i].y; y <= bullets[i].y + bullets[i].h; y++)
+                    collision |= pnt_in_rect(x, y, enemy_bullet[j].x, enemy_bullet[j].y, enemy_bullet[j].w, enemy_bullet[j].h) && !bullets[i].hidden && !enemy_bullet[j].hidden;
+            if(collision) {
+                bullets[i].hidden = true;
+                enemy_bullet[j].hidden = true;
+                score += 1;
+            }
+        }
 }
 
 const int enemy_trajectory_update_interval = 10, enemy_trajectory_speed = 11;
@@ -689,10 +703,12 @@ void enemy_trajectory() {
     }
 }
 
+bool allow_spawn_enemy = true;
 const int spawn_enemy_interval = 100;
 int spawn_enemy_runned_frames = 0;
-bool spawn_enemy() {
+void spawn_enemy() {
     if(spawn_enemy_runned_frames++ != spawn_enemy_interval) return;
+    if(!allow_spawn_enemy) return;
     spawn_enemy_runned_frames = 0;
     int i;
     for(i = 0;i < MAX_ENEMY;i++) {
@@ -704,10 +720,10 @@ bool spawn_enemy() {
             break;
         }
     }
-    return i != MAX_ENEMY;
+    return;
 }
 
-void kill_enemy() {
+void plane_bullet_effects() {
     int i, j;
     for(i = 0;i < MAX_ENEMY;i++){
         if(!enemies[i].hidden) {
@@ -728,6 +744,37 @@ void kill_enemy() {
             }
         }
     }
+
+    if(!boss.hidden) {
+        bool collision = false;
+        int x, y;
+        for(x = boss.x;x <= boss.x + boss.w;x++)
+            for(y = boss.y;y <= boss.y + boss.h;y++)
+                for(j = 0;j < MAX_BULLET;j++) {
+                    collision |= pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !boss.hidden && !bullets[j].hidden;
+                    if(pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !boss.hidden && !bullets[j].hidden)
+                        bullets[j].hidden = true;
+                }
+
+        if(collision) {
+            boss.health -= 1;
+            score += 1;
+        }
+        if(boss.health < 0) {
+            enemies[i].hidden = true;
+            /* defeated boss */
+        }
+    }
+}
+
+void plane_under_attack() {
+    if(--plane.health == 0) {
+        write_score(max(score, history_high_score));
+        game_change_scene(SCENE_MENU);
+    } else {
+        plane.x = SCREEN_W / 2;
+        plane.y = SCREEN_H;
+    }
 }
 
 void kill_plane() {
@@ -739,7 +786,10 @@ void kill_plane() {
             for(x = enemies[i].x;x <= enemies[i].x + enemies[i].w;x++)
                 for(y = enemies[i].y;y <= enemies[i].y + enemies[i].h;y++)
                     collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
-            if(collision) game_change_scene(SCENE_MENU);
+            if(collision) {
+                enemies[i].hidden = true;
+                plane_under_attack();
+            }
         }
     }
 
@@ -750,21 +800,37 @@ void kill_plane() {
             for(x = enemy_bullet[i].x;x <= enemy_bullet[i].x + enemy_bullet[i].w;x++)
                 for(y = enemy_bullet[i].y;y <= enemy_bullet[i].y + enemy_bullet[i].h;y++)
                     collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
-            if(collision) game_change_scene(SCENE_MENU);
+            if(collision) {
+                enemy_bullet[i].hidden = true;
+                plane_under_attack();
+            }
         }
     }
-}
 
-void kill_bullets() {
-    int i, j, x, y;
-    for(i = 0;i < MAX_BULLET;i++) for(j = 0;j < MAX_ENEMY_BULLET;j++) {
+    for(i = 0;i < MAX_BOSS_BULLETS;i++){
+        if(!boss_bullets[i].hidden) {
+            bool collision = false;
+            int x, y;
+            for(x = boss_bullets[i].x;x <= boss_bullets[i].x + boss_bullets[i].w;x++)
+                for(y = boss_bullets[i].y;y <= boss_bullets[i].y + boss_bullets[i].h;y++)
+                    collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
+            if(collision) {
+                boss_bullets[i].hidden = true;
+                plane_under_attack();
+            }
+        }
+    }
+
+    bool boss_attacked = false;
+    if(!boss.hidden) {
         bool collision = false;
-        for(x = bullets[i].x; x <= bullets[i].x + bullets[i].w; x++) for(y = bullets[i].y; y <= bullets[i].y + bullets[i].h; y++)
-            collision |= pnt_in_rect(x, y, enemy_bullet[j].x, enemy_bullet[j].y, enemy_bullet[j].w, enemy_bullet[j].h) && !bullets[i].hidden && !enemy_bullet[j].hidden;
-        if(collision) {
-            bullets[i].hidden = true;
-            enemy_bullet[j].hidden = true;
-            score += 1;
+        int x, y;
+        for(x = boss.x;x <= boss.x + boss.w;x++)
+            for(y = boss.y;y <= boss.y + boss.h;y++)
+                collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
+        if(collision && !boss_attacked) {
+            plane_under_attack();
+            boss_attacked = true;
         }
     }
 }
@@ -807,8 +873,8 @@ void physics_engine() {
     for (i = 0;i < MAX_BULLET;i++) {
         if (bullets[i].hidden)
             continue;
-        bullets[i].y += bullets[i].vy;
-        bullets[i].x += bullets[i].vx;
+        bullets[i].y += bullets[i].vy * time_coefficient;
+        bullets[i].x += bullets[i].vx * time_coefficient;
         if (bullets[i].y < 0)
             bullets[i].hidden = true;
     }
@@ -816,8 +882,8 @@ void physics_engine() {
     for (i = 0;i < MAX_ENEMY;i++) {
         if (enemies[i].hidden)
             continue;
-        enemies[i].y += enemies[i].vy;
-        enemies[i].x += enemies[i].vx;
+        enemies[i].y += enemies[i].vy * time_coefficient;
+        enemies[i].x += enemies[i].vx * time_coefficient;
         if(enemies[i].y > SCREEN_W)
             enemies[i].hidden = true;
         //enemies[i].y = max(0, min(SCREEN_H, enemies[i].y));
@@ -831,22 +897,39 @@ void physics_engine() {
         int x = plane.x - enemy_bullet[i].x, y = plane.y - enemy_bullet[i].y;
         enemy_bullet[i].vx = (float)x / sqrt(x * x + y * y) * enemy_bullet_speed;
         enemy_bullet[i].vy = (float)y / sqrt(x * x + y * y) * enemy_bullet_speed + 2;
-        enemy_bullet[i].y += enemy_bullet[i].vy;
-        enemy_bullet[i].x += enemy_bullet[i].vx;
+        enemy_bullet[i].y += enemy_bullet[i].vy * time_coefficient;
+        enemy_bullet[i].x += enemy_bullet[i].vx * time_coefficient;
         if (bullets[i].y > SCREEN_W)
             bullets[i].hidden = true;
+    }
+
+    if(!boss.hidden) {
+        boss.x += boss.vx * time_coefficient;
+        boss.y += boss.vy * time_coefficient;
+        boss.x = min(SCREEN_W, max(0, boss.x));
+        boss.y = min(SCREEN_H - 300, max(0, boss.y));
+    }
+
+    for(i = 0;i < MAX_BOSS_BULLETS;i++) {
+        if (boss_bullets[i].hidden)
+            continue;
+        boss_bullets[i].y += boss_bullets[i].vy * time_coefficient;
+        boss_bullets[i].x += boss_bullets[i].vx * time_coefficient;
+        if (boss_bullets[i].y > SCREEN_H || boss_bullets[i].y < 0 || boss_bullets[i].x < 0 || boss_bullets[i].x > SCREEN_W)
+            boss_bullets[i].hidden = true;
     }
 }
 
 void main_scene_start() {
     score = 0;
+    history_high_score = get_history_score();
     int i;
     plane.img = start_img_plane;
     plane.x = 400;
     plane.y = 500;
     plane.w = al_get_bitmap_width(plane.img);
     plane.h = al_get_bitmap_height(plane.img);
-    plane.health = 3;
+    plane.health = 10;
 
     for (i = 0; i < MAX_ENEMY; i++) {
         enemies[i].img = start_img_enemy;
@@ -880,14 +963,101 @@ void main_scene_start() {
         enemy_bullet[i].h = al_get_bitmap_height(enemy_bullet[i].img);
         enemy_bullet[i].w = al_get_bitmap_width(enemy_bullet[i].img);
     }
+
+    for(i = 0;i < MAX_BOSS_BULLETS;i++)
+        boss_bullets[i].hidden = true;
+
 }
 
 void score_board() {
+    al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), 0, 0, ALLEGRO_ALIGN_LEFT , "HIGH: %d", history_high_score);
     al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), SCREEN_W, 0, ALLEGRO_ALIGN_RIGHT , "SCORE: %d", score);
     al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), SCREEN_W, SCREEN_H - 32, ALLEGRO_ALIGN_RIGHT , "REMAINING LIVES: %d", plane.health);
 }
 
+void spawn_boss() {
+    if(score < 10) return;
+    if(boss.hidden == false) return;
+    allow_spawn_enemy = false;
+    boss.hidden = false;
+    boss.health = 50;
+    boss.x = SCREEN_W / 2;
+    boss.y = 0;
+    boss.img = al_load_bitmap("uncle_roger.jpeg");
+    boss.h = al_get_bitmap_height(boss.img);
+    boss.w = al_get_bitmap_width(boss.img);
+}
+
+const int move_boss_interval = 30;
+int runned_move_boss_interval = 0;
+void move_boss() {
+    if(runned_move_boss_interval++ % move_boss_interval != 0) return;
+    boss.vx = rand() % 11 - 11 / 2;
+    boss.vy = rand() % 11 - 11 / 2;
+}
+
+const int move_boss_shoot_bullet = 100;
+int runned_boss_shoot_bullet = 0;
+int random_uniform(int l, int r) { return rand() % (r - l + 1) - ((r - l + 1) / 2); }
+void boss_shoot_bullet() {
+    if(runned_boss_shoot_bullet++ % move_boss_shoot_bullet != 0) return;
+    if(boss.hidden) return;
+    int amount = 10;
+    int i;
+    for(i = 0;i < MAX_BOSS_BULLETS;i++) {
+        if(boss_bullets[i].hidden) {
+            boss_bullets[i].hidden = false;
+            while(0 == (boss_bullets[i].vx = random_uniform(-5, 5))) ;
+            while(0 == (boss_bullets[i].vy = random_uniform(-5, 5))) ;
+
+            boss_bullets[i].x = boss.x;
+            boss_bullets[i].y = boss.y;
+            boss_bullets[i].img = al_load_bitmap("msg.png");
+            boss_bullets[i].w = al_get_bitmap_width(boss_bullets[i].img);
+            boss_bullets[i].h = al_get_bitmap_height(boss_bullets[i].img);
+            if(--amount == 0) return;
+        }
+    }
+}
+
+void plane_ultimate() {
+    if(key_state[ALLEGRO_KEY_Q]) time_coefficient -= 0.01;
+    if(key_state[ALLEGRO_KEY_E]) time_coefficient += 0.01;
+}
 
 
 
 
+
+
+
+
+void render_main() {
+    int i;
+    al_draw_bitmap(start_img_background, 0, 0, 0);
+    // [HACKATHON 2-9]
+    // TODO: Draw all bullets in your bullet array.
+    // Uncomment and fill in the code below.
+    for (i = 0;i < MAX_BULLET; i++)
+        if(!bullets[i].hidden)
+            al_draw_bitmap(bullets[i].img, bullets[i].x, bullets[i].y, 0);
+
+    draw_movable_object(plane);
+    for (i = 0; i < MAX_ENEMY; i++)
+        draw_movable_object(enemies[i]);
+
+    for (i = 0; i < MAX_ENEMY_BULLET; i++)
+        if(!enemy_bullet[i].hidden)
+            draw_movable_object(enemy_bullet[i]);
+
+    if(!boss.hidden) draw_movable_object(boss);
+
+    for (i = 0;i < MAX_BOSS_BULLETS;i++)
+        if(!boss_bullets[i].hidden)
+            draw_movable_object(boss_bullets[i]);
+
+    score_board();
+}
+
+/* TODO -> Allow the msg bullet being attacked. */
+/* TODO -> Show Big Black Cook after beat up uncle roger. */

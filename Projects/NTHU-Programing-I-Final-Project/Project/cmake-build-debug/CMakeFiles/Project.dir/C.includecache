@@ -6,7 +6,13 @@
 
 #IncludeRegexTransform: 
 
+/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/Source/IO.h
+stdio.h
+-
+
 /home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/Source/main.c
+IO.h
+/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/Source/IO.h
 stdio.h
 -
 allegro5/allegro.h
