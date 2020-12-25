@@ -36,10 +36,11 @@ const int RESERVE_SAMPLES = 10;
 // const int SCENE_START = 2;
 enum {
     SCENE_MENU = 1,
-    SCENE_START = 2
+    SCENE_START = 2,
     // [HACKATHON 3-7]
     // TODO: Declare a new scene id.
-    , SCENE_SETTINGS = 3
+    SCENE_SETTINGS = 3,
+    SCENE_WIN = 4
 };
 
 /* Input states */
@@ -84,6 +85,8 @@ ALLEGRO_BITMAP* start_img_plane;
 ALLEGRO_BITMAP* start_img_enemy;
 ALLEGRO_SAMPLE* start_bgm;
 ALLEGRO_SAMPLE_ID start_bgm_id;
+
+ALLEGRO_BITMAP* winning_background;
 // [HACKATHON 2-1]
 // TODO: Declare a variable to store your bullet's image.
 // Uncomment and fill in the code below.
@@ -260,7 +263,7 @@ void allegro5_init(void) {
 }
 
 void game_init(void) {
-
+    winning_background = load_bitmap_resized("Fuiyoh_flipped.jpg", SCREEN_W, SCREEN_H);
     srand(0);
     boss.hidden = true;
     /* Shared resources*/
@@ -466,6 +469,12 @@ void game_draw(void) {
     // Draw anything you want, or simply clear the display.
     else if (active_scene == SCENE_SETTINGS) {
         al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), SCREEN_W / 2, 20, ALLEGRO_ALIGN_CENTER, "press r to erase high score");
+        al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H - 50, ALLEGRO_ALIGN_CENTER, "press q to exit");
+    } else if(active_scene == SCENE_WIN) {
+        al_clear_to_color(al_map_rgb(255, 255, 255));
+        al_draw_bitmap(winning_background, 0, 0, ALLEGRO_ALIGN_CENTER);
+        al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), SCREEN_W / 2, 20, ALLEGRO_ALIGN_CENTER, "you win");
     }
     al_flip_display();
 }
@@ -544,6 +553,8 @@ void on_key_down(int keycode) {
     else if (active_scene == SCENE_SETTINGS) {
         if (keycode == ALLEGRO_KEY_Q)
             game_change_scene(SCENE_MENU);
+        if (keycode == ALLEGRO_KEY_R)
+            write_score(0);
     }
 }
 
@@ -659,8 +670,6 @@ void spawn_boss();
 void move_boss();
 void boss_shoot_bullet();
 void plane_ultimate(); // Time slow.
-void save_score();
-
 void kill_bullets();
 
 void game_update_calls() {
@@ -686,6 +695,17 @@ void kill_bullets() {
             if(collision) {
                 bullets[i].hidden = true;
                 enemy_bullet[j].hidden = true;
+                score += 1;
+            }
+        }
+
+    for(i = 0;i < MAX_BULLET;i++) for(j = 0;j < MAX_BOSS_BULLETS;j++) {
+            bool collision = false;
+            for(x = bullets[i].x; x <= bullets[i].x + bullets[i].w; x++) for(y = bullets[i].y; y <= bullets[i].y + bullets[i].h; y++)
+                    collision |= pnt_in_rect(x, y, boss_bullets[j].x, boss_bullets[j].y, boss_bullets[j].w, boss_bullets[j].h) && !bullets[i].hidden && !boss_bullets[j].hidden;
+            if(collision) {
+                bullets[i].hidden = true;
+                boss_bullets[j].hidden = true;
                 score += 1;
             }
         }
@@ -762,7 +782,8 @@ void plane_bullet_effects() {
         }
         if(boss.health < 0) {
             enemies[i].hidden = true;
-            /* defeated boss */
+            write_score(max(score, history_high_score));
+            game_change_scene(SCENE_WIN);
         }
     }
 }
@@ -980,7 +1001,7 @@ void spawn_boss() {
     if(boss.hidden == false) return;
     allow_spawn_enemy = false;
     boss.hidden = false;
-    boss.health = 50;
+    boss.health = 30;
     boss.x = SCREEN_W / 2;
     boss.y = 0;
     boss.img = al_load_bitmap("uncle_roger.jpeg");
@@ -1059,5 +1080,4 @@ void render_main() {
     score_board();
 }
 
-/* TODO -> Allow the msg bullet being attacked. */
-/* TODO -> Show Big Black Cook after beat up uncle roger. */
+/* TODO -> Settings.reset_score */
