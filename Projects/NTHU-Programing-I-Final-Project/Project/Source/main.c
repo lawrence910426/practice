@@ -1,19 +1,26 @@
 // [main.c]
 // this template is provided for the 2D shooter game.
-#include "IO.h"
+
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_audio.h>
 #include <allegro5/mouse.h>
-#include <allegro5/allegro_acodec.h>
 #include <math.h>
 
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define min(a, b) ((a) < (b) ? (a) : (b))
+#include "../include/_utilities.h"
+#include "../include/boss.h"
+#include "../include/bullet_collision.h"
+#include "../include/enemy.h"
+#include "../include/init.h"
+#include "../include/IO.h"
+#include "../include/physics_engine.h"
+#include "../include/plane.h"
+#include "../include/render.h"
+#include "../include/scoring.h"
+#include "../include/ultimate.h"
 
 // If defined, logs will be shown on console and written to file.
 // If commented out, logs will not be shown nor be saved.
@@ -21,116 +28,6 @@
 
 extern volatile int mouse_b;
 
-/* Constants. */
-
-// Frame rate (frame per second)
-const int FPS = 60;
-// Display (screen) width.
-const int SCREEN_W = 800;
-// Display (screen) height.
-const int SCREEN_H = 600;
-// At most 10 audios can be played at a time.
-const int RESERVE_SAMPLES = 10;
-// Same as:
-// const int SCENE_MENU = 1;
-// const int SCENE_START = 2;
-enum {
-    SCENE_MENU = 1,
-    SCENE_START = 2,
-    // [HACKATHON 3-7]
-    // TODO: Declare a new scene id.
-    SCENE_SETTINGS = 3,
-    SCENE_WIN = 4
-};
-
-/* Input states */
-
-// The active scene id.
-int active_scene;
-// Keyboard state, whether the key is down or not.
-bool key_state[ALLEGRO_KEY_MAX];
-// Mouse state, whether the key is down or not.
-// 1 is for left, 2 is for right, 3 is for middle.
-bool *mouse_state;
-// Mouse position.
-int mouse_x, mouse_y;
-// TODO: More variables to store input states such as joysticks, ...
-
-/* Variables for allegro basic routines. */
-
-ALLEGRO_DISPLAY* game_display;
-ALLEGRO_EVENT_QUEUE* game_event_queue;
-ALLEGRO_TIMER* game_update_timer;
-
-/* Shared resources*/
-
-ALLEGRO_FONT* font_pirulen_32;
-ALLEGRO_FONT* font_pirulen_24;
-// TODO: More shared resources or data that needed to be accessed
-// across different scenes.
-
-/* Menu Scene resources*/
-ALLEGRO_BITMAP* main_img_background;
-// [HACKATHON 3-1]
-// TODO: Declare 2 variables for storing settings images.
-// Uncomment and fill in the code below.
-ALLEGRO_BITMAP* img_settings;
-ALLEGRO_BITMAP* img_settings2;
-ALLEGRO_SAMPLE* main_bgm;
-ALLEGRO_SAMPLE_ID main_bgm_id;
-
-/* Start Scene resources*/
-ALLEGRO_BITMAP* start_img_background;
-ALLEGRO_BITMAP* start_img_plane;
-ALLEGRO_BITMAP* start_img_enemy;
-ALLEGRO_SAMPLE* start_bgm;
-ALLEGRO_SAMPLE_ID start_bgm_id;
-
-ALLEGRO_BITMAP* winning_background;
-// [HACKATHON 2-1]
-// TODO: Declare a variable to store your bullet's image.
-// Uncomment and fill in the code below.
-ALLEGRO_BITMAP* img_bullet;
-
-typedef struct {
-    // The center coordinate of the image.
-    float x, y;
-    // The width and height of the object.
-    float w, h;
-    // The velocity in x, y axes.
-    float vx, vy;
-    // Should we draw this object on the screen.
-    bool hidden;
-    // The pointer to the object’s image.
-    ALLEGRO_BITMAP* img;
-    // The health of the plane
-    int health;
-} MovableObject;
-#define MAX_ENEMY_BULLET 30
-MovableObject enemy_bullet[MAX_ENEMY_BULLET];
-
-void draw_movable_object(MovableObject obj);
-#define MAX_ENEMY 10
-// [HACKATHON 2-2]
-// TODO: Declare the max bullet count that will show on screen.
-// You can try max 4 bullets here and see if you needed more.
-// Uncomment and fill in the code below.
-#define MAX_BULLET 4
-MovableObject plane;
-MovableObject enemies[MAX_ENEMY];
-// [HACKATHON 2-3]
-// TODO: Declare an array to store bullets with size of max bullet count.
-// Uncomment and fill in the code below.
-MovableObject bullets[MAX_BULLET];
-// [HACKATHON 2-4]
-// TODO: Set up bullet shooting cool-down variables.
-// 1) Declare your shooting cool-down time as constant. (0.2f will be nice)
-// 2) Declare your last shoot timestamp.
-// Uncomment and fill in the code below.
-const float MAX_COOLDOWN = 0.2;
-double last_shoot_timestamp;
-
-MovableObject boss;
 /* Declare function prototypes. */
 
 // Initialize allegro5 library
@@ -153,13 +50,10 @@ void game_draw(void);
 void game_destroy(void);
 // Function to change from one scene to another.
 void game_change_scene(int next_scene);
-// Load resized bitmap and check if failed.
-ALLEGRO_BITMAP *load_bitmap_resized(const char *filename, int w, int h);
 // [HACKATHON 3-2]
 // TODO: Declare a function.
 // Determines whether the point (px, py) is in rect (x, y, w, h).
 // Uncomment the code below.
-bool pnt_in_rect(int px, int py, int x, int y, int w, int h);
 
 /* Event callbacks. */
 void on_key_down(int keycode);
@@ -284,10 +178,6 @@ void game_init(void) {
         game_abort("failed to load audio: S31-Night Prowler.ogg");
 #endif
 
-    // [HACKATHON 3-4]
-    // TODO: Load settings images.
-    // Don't forget to check their return values.
-    // Uncomment and fill in the code below.
     img_settings = al_load_bitmap("settings.png");
     if (!img_settings)
         game_abort("failed to load image: settings.png");
@@ -295,16 +185,6 @@ void game_init(void) {
     if (!img_settings2)
         game_abort("failed to load image: settings2.png");
 
-    /* Start Scene resources*/
-    start_img_background = load_bitmap_resized("start-bg.jpg", SCREEN_W, SCREEN_H);
-
-    start_img_plane = al_load_bitmap("plane.png");
-    if (!start_img_plane)
-        game_abort("failed to load image: plane.png");
-
-    start_img_enemy = al_load_bitmap("smallfighter0006.png");
-    if (!start_img_enemy)
-        game_abort("failed to load image: smallfighter0006.png");
 
 #ifdef audio
     start_bgm = al_load_sample("mythica.ogg");
@@ -312,18 +192,6 @@ void game_init(void) {
         game_abort("failed to load audio: mythica.ogg");
 #endif
 
-    // [HACKATHON 2-5]
-    // TODO: Initialize bullets.
-    // 1) Search for a bullet image online and put it in your project.
-    //    You can use the image we provided.
-    // 2) Load it in by 'al_load_bitmap' or 'load_bitmap_resized'.
-    // 3) If you use 'al_load_bitmap', don't forget to check its return value.
-    // Uncomment and fill in the code below.
-    img_bullet = al_load_bitmap("image12.png");
-    if (!img_bullet)
-        game_abort("failed to load image: image12.png");
-
-    // Change to first scene.
     game_change_scene(SCENE_MENU);
 }
 
@@ -388,68 +256,26 @@ void game_start_event_loop(void) {
 
 void game_update(void) {
     if (active_scene == SCENE_START) {
-        plane.vx = plane.vy = 0;
-        if (key_state[ALLEGRO_KEY_UP] || key_state[ALLEGRO_KEY_W])
-            plane.vy -= 1;
-        if (key_state[ALLEGRO_KEY_DOWN] || key_state[ALLEGRO_KEY_S])
-            plane.vy += 1;
-        if (key_state[ALLEGRO_KEY_LEFT] || key_state[ALLEGRO_KEY_A])
-            plane.vx -= 1;
-        if (key_state[ALLEGRO_KEY_RIGHT] || key_state[ALLEGRO_KEY_D])
-            plane.vx += 1;
-        // 0.71 is (1/sqrt(2)).
-        plane.y += plane.vy * 10 * (plane.vx ? 0.71f : 1);
-        plane.x += plane.vx * 10 * (plane.vy ? 0.71f : 1);
-        // [HACKATHON 1-1]
-        // TODO: Limit the plane's collision box inside the frame.
-        //       (x, y axes can be separated.)
-        // Uncomment and fill in the code below.
-        if (plane.x - plane.w / 2 < 0)
-            plane.x = plane.w / 2;
-        else if (plane.x + plane.w / 2 > SCREEN_W)
-            plane.x = SCREEN_W - plane.w / 2;
-        if (plane.y - plane.h / 2 < 0)
-            plane.y = plane.h / 2;
-        else if (plane.y + plane.h / 2 > SCREEN_H)
-            plane.y = SCREEN_H - plane.h / 2;
-
-        // [HACKATHON 2-8]
-        // TODO: Shoot if key is down and cool-down is over.
-        // 1) Get the time now using 'al_get_time'.
-        // 2) If Space key is down in 'key_state' and the time
-        //    between now and last shoot is not less that cool
-        //    down time.
-        // 3) Loop through the bullet array and find one that is hidden.
-        //    (This part can be optimized.)
-        // 4) The bullet will be found if your array is large enough.
-        // 5) Set the last shoot time to now.
-        // 6) Set hidden to false (recycle the bullet) and set its x, y to the
-        //    front part of your plane.
-        // Uncomment and fill in the code below.
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state(&state);
-
-        double now = al_get_time();
-        if ((key_state[ALLEGRO_KEY_SPACE] || (state.buttons & 1)) && now - last_shoot_timestamp >= MAX_COOLDOWN) {
-            int i;
-            for (i = 0; i < MAX_BULLET; i++) {
-                if (bullets[i].hidden) {
-                    last_shoot_timestamp = now;
-                    bullets[i].hidden = false;
-                    bullets[i].x = plane.x;
-                    bullets[i].y = plane.y;
-                    break;
-                }
-            }
-        }
-        game_update_calls();
+        enemy_trajectory();
+        spawn_enemy();
+        plane_bullet_effects();
+        kill_plane();
+        physics_engine();
+        enemy_attack();
+        kill_bullets();
+        spawn_boss();
+        move_boss();
+        boss_shoot_bullet();
+        plane_ultimate();
+        plane_move();
+        plane_attack();
     }
 }
 
 void game_draw(void) {
     if (active_scene == SCENE_MENU) {
         al_draw_bitmap(main_img_background, 0, 0, 0);
-        al_draw_text(font_pirulen_32, al_map_rgb(255, 255, 255), SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTER, "Space Shooter");
+        al_draw_text(font_pirulen_32, al_map_rgb(255, 255, 255), SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTER, "YEE SHOOTER");
         al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), 20, SCREEN_H - 50, 0, "Press enter key to start");
         // [HACKATHON 3-5]
         // TODO: Draw settings images.
@@ -488,7 +314,6 @@ void game_destroy(void) {
 
     /* Menu Scene resources*/
     al_destroy_bitmap(main_img_background);
-    al_destroy_sample(main_bgm);
     // [HACKATHON 3-6]
     // TODO: Destroy the 2 settings images.
     // Uncomment and fill in the code below.
@@ -499,7 +324,6 @@ void game_destroy(void) {
     al_destroy_bitmap(start_img_background);
     al_destroy_bitmap(start_img_plane);
     al_destroy_bitmap(start_img_enemy);
-    al_destroy_sample(start_bgm);
     // [HACKATHON 2-10]
     // TODO: Destroy your bullet image.
     // Uncomment and fill in the code below.
@@ -570,42 +394,6 @@ void on_mouse_down(int btn, int x, int y) {
     }
 }
 
-void draw_movable_object(MovableObject obj) {
-    if (obj.hidden)
-        return;
-    al_draw_bitmap(obj.img, round(obj.x - obj.w / 2), round(obj.y - obj.h / 2), 0);
-}
-
-ALLEGRO_BITMAP *load_bitmap_resized(const char *filename, int w, int h) {
-    ALLEGRO_BITMAP* loaded_bmp = al_load_bitmap(filename);
-    if (!loaded_bmp)
-        game_abort("failed to load image: %s", filename);
-    ALLEGRO_BITMAP *resized_bmp = al_create_bitmap(w, h);
-    ALLEGRO_BITMAP *prev_target = al_get_target_bitmap();
-
-    if (!resized_bmp)
-        game_abort("failed to create bitmap when creating resized image: %s", filename);
-    al_set_target_bitmap(resized_bmp);
-    al_draw_scaled_bitmap(loaded_bmp, 0, 0,
-        al_get_bitmap_width(loaded_bmp),
-        al_get_bitmap_height(loaded_bmp),
-        0, 0, w, h, 0);
-    al_set_target_bitmap(prev_target);
-    al_destroy_bitmap(loaded_bmp);
-
-    game_log("resized image: %s", filename);
-
-    return resized_bmp;
-}
-
-// [HACKATHON 3-3]
-// TODO: Define bool pnt_in_rect(int px, int py, int x, int y, int w, int h)
-// Uncomment and fill in the code below.
-bool pnt_in_rect(int px, int py, int x, int y, int w, int h) {
-    return x <= px && px <= x + w && y <= py && py <= y + h;
-}
-
-
 // +=================================================================+
 // | Code below is for debugging purpose, it's fine to remove it.    |
 // | Deleting the code below and removing all calls to the functions |
@@ -652,432 +440,5 @@ void game_vlog(const char* format, va_list arg) {
 #endif
 }
 
-
-float time_coefficient = 1;
-int score;
-int history_high_score;
-
-#define MAX_BOSS_BULLETS 100
-MovableObject boss_bullets[MAX_BOSS_BULLETS];
-
-void enemy_trajectory();
-void plane_bullet_effects(); // Kill the enemy which is touched by bullets.
-void spawn_enemy(); // Spawn the enemy randomly.
-void kill_plane(); // Kill the plane when touched by enemies
-void physics_engine();
-void enemy_attack();
-void spawn_boss();
-void move_boss();
-void boss_shoot_bullet();
-void plane_ultimate(); // Time slow.
-void kill_bullets();
-
-void game_update_calls() {
-    enemy_trajectory();
-    spawn_enemy();
-    plane_bullet_effects();
-    kill_plane();
-    physics_engine();
-    enemy_attack();
-    kill_bullets();
-    spawn_boss();
-    move_boss();
-    boss_shoot_bullet();
-    plane_ultimate();
-}
-
-void kill_bullets() {
-    int i, j, x, y;
-    for(i = 0;i < MAX_BULLET;i++) for(j = 0;j < MAX_ENEMY_BULLET;j++) {
-            bool collision = false;
-            for(x = bullets[i].x; x <= bullets[i].x + bullets[i].w; x++) for(y = bullets[i].y; y <= bullets[i].y + bullets[i].h; y++)
-                    collision |= pnt_in_rect(x, y, enemy_bullet[j].x, enemy_bullet[j].y, enemy_bullet[j].w, enemy_bullet[j].h) && !bullets[i].hidden && !enemy_bullet[j].hidden;
-            if(collision) {
-                bullets[i].hidden = true;
-                enemy_bullet[j].hidden = true;
-                score += 1;
-            }
-        }
-
-    for(i = 0;i < MAX_BULLET;i++) for(j = 0;j < MAX_BOSS_BULLETS;j++) {
-            bool collision = false;
-            for(x = bullets[i].x; x <= bullets[i].x + bullets[i].w; x++) for(y = bullets[i].y; y <= bullets[i].y + bullets[i].h; y++)
-                    collision |= pnt_in_rect(x, y, boss_bullets[j].x, boss_bullets[j].y, boss_bullets[j].w, boss_bullets[j].h) && !bullets[i].hidden && !boss_bullets[j].hidden;
-            if(collision) {
-                bullets[i].hidden = true;
-                boss_bullets[j].hidden = true;
-                score += 1;
-            }
-        }
-}
-
-const int enemy_trajectory_update_interval = 10, enemy_trajectory_speed = 11;
-int enemy_trajectory_runned_frames = 0;
-void enemy_trajectory() {
-    if(enemy_trajectory_runned_frames++ % enemy_trajectory_update_interval != 0) return;
-    int i;
-    int master_vy = rand() % enemy_trajectory_speed - enemy_trajectory_speed / 2;
-    for(i = 0;i < MAX_ENEMY;i++) {
-        enemies[i].vx = sin(enemy_trajectory_runned_frames + i);
-        enemies[i].vy = 1;
-    }
-}
-
-bool allow_spawn_enemy = true;
-const int spawn_enemy_interval = 100;
-int spawn_enemy_runned_frames = 0;
-void spawn_enemy() {
-    if(spawn_enemy_runned_frames++ != spawn_enemy_interval) return;
-    if(!allow_spawn_enemy) return;
-    spawn_enemy_runned_frames = 0;
-    int i;
-    for(i = 0;i < MAX_ENEMY;i++) {
-        if(enemies[i].hidden) {
-            enemies[i].hidden = false;
-            enemies[i].x = rand() % SCREEN_W;
-            enemies[i].y = 0;
-            enemies[i].health = 3;
-            break;
-        }
-    }
-    return;
-}
-
-void plane_bullet_effects() {
-    int i, j;
-    for(i = 0;i < MAX_ENEMY;i++){
-        if(!enemies[i].hidden) {
-            bool collision = false;
-            int x, y;
-            for(x = enemies[i].x;x <= enemies[i].x + enemies[i].w;x++)
-                for(y = enemies[i].y;y <= enemies[i].y + enemies[i].h;y++)
-                    for(j = 0;j < MAX_BULLET;j++) {
-                        collision |= pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !bullets[j].hidden;
-                        if(pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !bullets[j].hidden)
-                            bullets[j].hidden = true;
-                    }
-
-            if(collision) enemies[i].health -= 1;
-            if(enemies[i].health < 0) {
-                enemies[i].hidden = true;
-                score += 5;
-            }
-        }
-    }
-
-    if(!boss.hidden) {
-        bool collision = false;
-        int x, y;
-        for(x = boss.x;x <= boss.x + boss.w;x++)
-            for(y = boss.y;y <= boss.y + boss.h;y++)
-                for(j = 0;j < MAX_BULLET;j++) {
-                    collision |= pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !boss.hidden && !bullets[j].hidden;
-                    if(pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !boss.hidden && !bullets[j].hidden)
-                        bullets[j].hidden = true;
-                }
-
-        if(collision) {
-            boss.health -= 1;
-            score += 1;
-        }
-        if(boss.health < 0) {
-            enemies[i].hidden = true;
-            write_score(max(score, history_high_score));
-            game_change_scene(SCENE_WIN);
-        }
-    }
-}
-
-void plane_under_attack() {
-    if(--plane.health == 0) {
-        write_score(max(score, history_high_score));
-        game_change_scene(SCENE_MENU);
-    } else {
-        plane.x = SCREEN_W / 2;
-        plane.y = SCREEN_H;
-    }
-}
-
-void kill_plane() {
-    int i;
-    for(i = 0;i < MAX_ENEMY;i++){
-        if(!enemies[i].hidden) {
-            bool collision = false;
-            int x, y;
-            for(x = enemies[i].x;x <= enemies[i].x + enemies[i].w;x++)
-                for(y = enemies[i].y;y <= enemies[i].y + enemies[i].h;y++)
-                    collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
-            if(collision) {
-                enemies[i].hidden = true;
-                plane_under_attack();
-            }
-        }
-    }
-
-    for(i = 0;i < MAX_ENEMY_BULLET;i++){
-        if(!enemy_bullet[i].hidden) {
-            bool collision = false;
-            int x, y;
-            for(x = enemy_bullet[i].x;x <= enemy_bullet[i].x + enemy_bullet[i].w;x++)
-                for(y = enemy_bullet[i].y;y <= enemy_bullet[i].y + enemy_bullet[i].h;y++)
-                    collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
-            if(collision) {
-                enemy_bullet[i].hidden = true;
-                plane_under_attack();
-            }
-        }
-    }
-
-    for(i = 0;i < MAX_BOSS_BULLETS;i++){
-        if(!boss_bullets[i].hidden) {
-            bool collision = false;
-            int x, y;
-            for(x = boss_bullets[i].x;x <= boss_bullets[i].x + boss_bullets[i].w;x++)
-                for(y = boss_bullets[i].y;y <= boss_bullets[i].y + boss_bullets[i].h;y++)
-                    collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
-            if(collision) {
-                boss_bullets[i].hidden = true;
-                plane_under_attack();
-            }
-        }
-    }
-
-    bool boss_attacked = false;
-    if(!boss.hidden) {
-        bool collision = false;
-        int x, y;
-        for(x = boss.x;x <= boss.x + boss.w;x++)
-            for(y = boss.y;y <= boss.y + boss.h;y++)
-                collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
-        if(collision && !boss_attacked) {
-            plane_under_attack();
-            boss_attacked = true;
-        }
-    }
-}
-
-void enemy_shoot_bullet();
-const int attack_interval = 10;
-int attack_frames = 0;
-void enemy_attack() {
-    if(attack_frames++ % attack_interval != 0) return;
-    int i;
-    for(i = 0;i < MAX_ENEMY;i++) {
-        if(!enemies[i].hidden) {
-            enemy_shoot_bullet(i);
-            break;
-        }
-    }
-}
-
-void enemy_shoot_bullet(int enemy_id) {
-    int i;
-    for(i = 0;i < MAX_ENEMY_BULLET;i++) {
-        if(enemy_bullet[i].hidden) {
-            enemy_bullet[i].hidden = false;
-            enemy_bullet[i].img = al_load_bitmap("rocket-1.png");
-            enemy_bullet[i].x = enemies[enemy_id].x;
-            enemy_bullet[i].y = enemies[enemy_id].y;
-            break;
-        }
-    }
-}
-
-void physics_engine() {
-    // [HACKATHON 2-7]
-    // TODO: Update bullet coordinates.
-    // 1) For each bullets, if it's not hidden, update x, y
-    // according to vx, vy.
-    // 2) If the bullet is out of the screen, hide it.
-    // Uncomment and fill in the code below.
-    int i;
-    for (i = 0;i < MAX_BULLET;i++) {
-        if (bullets[i].hidden)
-            continue;
-        bullets[i].y += bullets[i].vy * time_coefficient;
-        bullets[i].x += bullets[i].vx * time_coefficient;
-        if (bullets[i].y < 0)
-            bullets[i].hidden = true;
-    }
-
-    for (i = 0;i < MAX_ENEMY;i++) {
-        if (enemies[i].hidden)
-            continue;
-        enemies[i].y += enemies[i].vy * time_coefficient;
-        enemies[i].x += enemies[i].vx * time_coefficient;
-        if(enemies[i].y > SCREEN_W)
-            enemies[i].hidden = true;
-        //enemies[i].y = max(0, min(SCREEN_H, enemies[i].y));
-        enemies[i].x = max(0, min(SCREEN_W, enemies[i].x));
-    }
-
-    const float enemy_bullet_speed = 1;
-    for(i = 0;i < MAX_ENEMY_BULLET;i++) {
-        if (enemy_bullet[i].hidden)
-            continue;
-        int x = plane.x - enemy_bullet[i].x, y = plane.y - enemy_bullet[i].y;
-        enemy_bullet[i].vx = (float)x / sqrt(x * x + y * y) * enemy_bullet_speed;
-        enemy_bullet[i].vy = (float)y / sqrt(x * x + y * y) * enemy_bullet_speed + 2;
-        enemy_bullet[i].y += enemy_bullet[i].vy * time_coefficient;
-        enemy_bullet[i].x += enemy_bullet[i].vx * time_coefficient;
-        if (bullets[i].y > SCREEN_W)
-            bullets[i].hidden = true;
-    }
-
-    if(!boss.hidden) {
-        boss.x += boss.vx * time_coefficient;
-        boss.y += boss.vy * time_coefficient;
-        boss.x = min(SCREEN_W, max(0, boss.x));
-        boss.y = min(SCREEN_H - 300, max(0, boss.y));
-    }
-
-    for(i = 0;i < MAX_BOSS_BULLETS;i++) {
-        if (boss_bullets[i].hidden)
-            continue;
-        boss_bullets[i].y += boss_bullets[i].vy * time_coefficient;
-        boss_bullets[i].x += boss_bullets[i].vx * time_coefficient;
-        if (boss_bullets[i].y > SCREEN_H || boss_bullets[i].y < 0 || boss_bullets[i].x < 0 || boss_bullets[i].x > SCREEN_W)
-            boss_bullets[i].hidden = true;
-    }
-}
-
-void main_scene_start() {
-    score = 0;
-    history_high_score = get_history_score();
-    int i;
-    plane.img = start_img_plane;
-    plane.x = 400;
-    plane.y = 500;
-    plane.w = al_get_bitmap_width(plane.img);
-    plane.h = al_get_bitmap_height(plane.img);
-    plane.health = 10;
-
-    for (i = 0; i < MAX_ENEMY; i++) {
-        enemies[i].img = start_img_enemy;
-        enemies[i].w = al_get_bitmap_width(start_img_enemy);
-        enemies[i].h = al_get_bitmap_height(start_img_enemy);
-        enemies[i].x = 30;
-        enemies[i].y = i * 20;
-    }
-    // [HACKATHON 2-6]
-    // TODO: Initialize bullets.
-    // For each bullets in array, set their w and h to the size of
-    // the image, and set their img to bullet image, hidden to true,
-    // (vx, vy) to (0, -3).
-    // Uncomment and fill in the code below.
-    for (i = 0; i < MAX_BULLET; i++) {
-        bullets[i].w = al_get_bitmap_width(img_bullet);
-        bullets[i].h = al_get_bitmap_height(img_bullet);
-        bullets[i].img = img_bullet;
-        bullets[i].vx = 0;
-        bullets[i].vy = -10;
-        bullets[i].hidden = true;
-    }
-
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].health = 3;
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].x = 30;
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].y = i * 10;
-    for(i = 0;i < MAX_ENEMY;i++) enemies[i].hidden = false;
-    for(i = 0;i < MAX_ENEMY_BULLET;i++) enemy_bullet[i].hidden = true;
-    for(i = 0;i < MAX_ENEMY_BULLET;i++) {
-        enemy_bullet[i].img = al_load_bitmap("rocket-1.png");
-        enemy_bullet[i].h = al_get_bitmap_height(enemy_bullet[i].img);
-        enemy_bullet[i].w = al_get_bitmap_width(enemy_bullet[i].img);
-    }
-
-    for(i = 0;i < MAX_BOSS_BULLETS;i++)
-        boss_bullets[i].hidden = true;
-
-}
-
-void score_board() {
-    al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), 0, 0, ALLEGRO_ALIGN_LEFT , "HIGH: %d", history_high_score);
-    al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), SCREEN_W, 0, ALLEGRO_ALIGN_RIGHT , "SCORE: %d", score);
-    al_draw_textf(font_pirulen_32, al_map_rgb(0, 0, 0), SCREEN_W, SCREEN_H - 32, ALLEGRO_ALIGN_RIGHT , "REMAINING LIVES: %d", plane.health);
-}
-
-void spawn_boss() {
-    if(score < 10) return;
-    if(boss.hidden == false) return;
-    allow_spawn_enemy = false;
-    boss.hidden = false;
-    boss.health = 30;
-    boss.x = SCREEN_W / 2;
-    boss.y = 0;
-    boss.img = al_load_bitmap("uncle_roger.jpeg");
-    boss.h = al_get_bitmap_height(boss.img);
-    boss.w = al_get_bitmap_width(boss.img);
-}
-
-const int move_boss_interval = 30;
-int runned_move_boss_interval = 0;
-void move_boss() {
-    if(runned_move_boss_interval++ % move_boss_interval != 0) return;
-    boss.vx = rand() % 11 - 11 / 2;
-    boss.vy = rand() % 11 - 11 / 2;
-}
-
-const int move_boss_shoot_bullet = 100;
-int runned_boss_shoot_bullet = 0;
-int random_uniform(int l, int r) { return rand() % (r - l + 1) - ((r - l + 1) / 2); }
-void boss_shoot_bullet() {
-    if(runned_boss_shoot_bullet++ % move_boss_shoot_bullet != 0) return;
-    if(boss.hidden) return;
-    int amount = 10;
-    int i;
-    for(i = 0;i < MAX_BOSS_BULLETS;i++) {
-        if(boss_bullets[i].hidden) {
-            boss_bullets[i].hidden = false;
-            while(0 == (boss_bullets[i].vx = random_uniform(-5, 5))) ;
-            while(0 == (boss_bullets[i].vy = random_uniform(-5, 5))) ;
-
-            boss_bullets[i].x = boss.x;
-            boss_bullets[i].y = boss.y;
-            boss_bullets[i].img = al_load_bitmap("msg.png");
-            boss_bullets[i].w = al_get_bitmap_width(boss_bullets[i].img);
-            boss_bullets[i].h = al_get_bitmap_height(boss_bullets[i].img);
-            if(--amount == 0) return;
-        }
-    }
-}
-
-void plane_ultimate() {
-    if(key_state[ALLEGRO_KEY_Q]) time_coefficient -= 0.01;
-    if(key_state[ALLEGRO_KEY_E]) time_coefficient += 0.01;
-}
-
-
-
-
-
-
-
-
-void render_main() {
-    int i;
-    al_draw_bitmap(start_img_background, 0, 0, 0);
-    // [HACKATHON 2-9]
-    // TODO: Draw all bullets in your bullet array.
-    // Uncomment and fill in the code below.
-    for (i = 0;i < MAX_BULLET; i++)
-        if(!bullets[i].hidden)
-            al_draw_bitmap(bullets[i].img, bullets[i].x, bullets[i].y, 0);
-
-    draw_movable_object(plane);
-    for (i = 0; i < MAX_ENEMY; i++)
-        draw_movable_object(enemies[i]);
-
-    for (i = 0; i < MAX_ENEMY_BULLET; i++)
-        if(!enemy_bullet[i].hidden)
-            draw_movable_object(enemy_bullet[i]);
-
-    if(!boss.hidden) draw_movable_object(boss);
-
-    for (i = 0;i < MAX_BOSS_BULLETS;i++)
-        if(!boss_bullets[i].hidden)
-            draw_movable_object(boss_bullets[i]);
-
-    score_board();
-}
 
 /* TODO -> Settings.reset_score */

@@ -79,6 +79,36 @@
 		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/Source/main.c">
 			<Option target="Project"/>
 		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/_utilities.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/boss.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/bullet_collision.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/enemy.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/init.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/physics_engine.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/plane.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/render.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/scoring.h">
+			<Option target="Project"/>
+		</Unit>
+		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/include/ultimate.h">
+			<Option target="Project"/>
+		</Unit>
 		<Unit filename="/home/lawrence910426/Desktop/github/practice/Projects/NTHU-Programing-I-Final-Project/Project/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
