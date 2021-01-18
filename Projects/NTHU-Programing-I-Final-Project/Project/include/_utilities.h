@@ -172,3 +172,6 @@ ALLEGRO_BITMAP *load_bitmap_resized(const char *filename, int w, int h) {
 
     return resized_bmp;
 }
+
+float ult_x = SCREEN_W / 2, ult_y = SCREEN_H / 2, ult_r = 0;
+bool draw_ult = false;

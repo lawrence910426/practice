@@ -39,4 +39,6 @@ void render_main() {
             draw_movable_object(boss_bullets[i]);
 
     score_board();
+
+    if(draw_ult) al_draw_filled_circle(ult_x, ult_y, ult_r, al_map_rgb(255, 255, 255));
 }

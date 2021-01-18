@@ -72,7 +72,6 @@ void game_abort(const char* format, ...);
 void game_log(const char* format, ...);
 // Log using va_list.
 void game_vlog(const char* format, va_list arg);
-void game_update_calls();
 void main_scene_start();
 void render_main();
 
@@ -157,7 +156,7 @@ void allegro5_init(void) {
 }
 
 void game_init(void) {
-    winning_background = load_bitmap_resized("Fuiyoh_flipped.jpg", SCREEN_W, SCREEN_H);
+    winning_background = load_bitmap_resized("winning_hor_flipped.jpg", SCREEN_W, SCREEN_H);
     srand(0);
     boss.hidden = true;
     /* Shared resources*/
@@ -170,7 +169,7 @@ void game_init(void) {
         game_abort("failed to load font: pirulen.ttf with size 24");
 
     /* Menu Scene resources*/
-    main_img_background = load_bitmap_resized("main-bg.jpg", SCREEN_W, SCREEN_H);
+    main_img_background = load_bitmap_resized("time.jpg", SCREEN_W, SCREEN_H);
 
 #ifdef audio
     main_bgm = al_load_sample("S31-Night Prowler.ogg");
@@ -260,7 +259,6 @@ void game_update(void) {
         spawn_enemy();
         plane_bullet_effects();
         kill_plane();
-        physics_engine();
         enemy_attack();
         kill_bullets();
         spawn_boss();
@@ -269,13 +267,16 @@ void game_update(void) {
         plane_ultimate();
         plane_move();
         plane_attack();
+        physics_engine();
     }
 }
 
 void game_draw(void) {
     if (active_scene == SCENE_MENU) {
         al_draw_bitmap(main_img_background, 0, 0, 0);
-        al_draw_text(font_pirulen_32, al_map_rgb(255, 255, 255), SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTER, "YEE SHOOTER");
+        al_draw_filled_rectangle(SCREEN_W / 2 - 200, 30, SCREEN_W / 2 + 200, 75, al_map_rgb(0, 0, 0));
+        al_draw_text(font_pirulen_32, al_map_rgb(255,255, 255), SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTER, "Time Shooter");
+        al_draw_filled_rectangle(0, SCREEN_H - 50, 600, SCREEN_H - 10, al_map_rgb(0, 0, 0));
         al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), 20, SCREEN_H - 50, 0, "Press enter key to start");
         // [HACKATHON 3-5]
         // TODO: Draw settings images.
@@ -298,9 +299,7 @@ void game_draw(void) {
         al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), SCREEN_W / 2, 20, ALLEGRO_ALIGN_CENTER, "press r to erase high score");
         al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H - 50, ALLEGRO_ALIGN_CENTER, "press q to exit");
     } else if(active_scene == SCENE_WIN) {
-        al_clear_to_color(al_map_rgb(255, 255, 255));
         al_draw_bitmap(winning_background, 0, 0, ALLEGRO_ALIGN_CENTER);
-        al_draw_text(font_pirulen_24, al_map_rgb(255, 255, 255), SCREEN_W / 2, 20, ALLEGRO_ALIGN_CENTER, "you win");
     }
     al_flip_display();
 }

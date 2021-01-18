@@ -18,8 +18,8 @@ void physics_engine() {
     for (i = 0;i < MAX_BULLET;i++) {
         if (bullets[i].hidden)
             continue;
-        bullets[i].y += bullets[i].vy * time_coefficient;
-        bullets[i].x += bullets[i].vx * time_coefficient;
+        bullets[i].y += bullets[i].vy;
+        bullets[i].x += bullets[i].vx;
         if (bullets[i].y < 0)
             bullets[i].hidden = true;
     }

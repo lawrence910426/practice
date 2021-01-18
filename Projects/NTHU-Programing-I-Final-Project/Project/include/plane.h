@@ -34,12 +34,12 @@ void plane_bullet_effects() {
     if(!boss.hidden) {
         bool collision = false;
         int x, y;
-        for(x = boss.x;x <= boss.x + boss.w;x++)
-            for(y = boss.y;y <= boss.y + boss.h;y++)
+        for(x = boss.x - boss.w / 2;x <= boss.x + boss.w / 2;x++)
+            for(y = boss.y - boss.h / 2;y <= boss.y + boss.h / 2;y++)
                 for(j = 0;j < MAX_BULLET;j++) {
                     collision |= pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !boss.hidden && !bullets[j].hidden;
                     if(pnt_in_rect(x, y, bullets[j].x, bullets[j].y, bullets[j].w, bullets[j].h) && !boss.hidden && !bullets[j].hidden)
-                        bullets[j].hidden = true;
+                            bullets[j].hidden = true;
                 }
 
         if(collision) {
@@ -112,8 +112,8 @@ void kill_plane() {
     if(!boss.hidden) {
         bool collision = false;
         int x, y;
-        for(x = boss.x;x <= boss.x + boss.w;x++)
-            for(y = boss.y;y <= boss.y + boss.h;y++)
+        for(x = boss.x - boss.w / 2;x <= boss.x + boss.w / 2;x++)
+            for(y = boss.y - boss.h / 2;y <= boss.y + boss.h / 2;y++)
                 collision |= pnt_in_rect(x, y, plane.x, plane.y, plane.w, plane.h);
         if(collision && !boss_attacked) {
             plane_under_attack();
