@@ -24,7 +24,7 @@ public:
     bool empty() { return _top == -1; }
 
     // Return the size of the stack
-    int size() { return _top; }
+    int size() { return _top + 1; }
 
     // Return the top element
     T& top() { return _stack[_top]; }
@@ -42,7 +42,7 @@ public:
 private:
     void resize() {
         T* buffer = new T[capacity * 2];
-        for(int i = 0;i < capacity;i++) buffer[i] = _stack[i];
+        for(int i = 0; i < capacity; i++) buffer[i] = _stack[i];
         delete [] _stack;
         _stack = buffer;
         capacity *= 2;
@@ -80,7 +80,7 @@ public:
     // Insert a new element at rear
     void push(const T& item) {
         if(_rear == capacity) extend();
-        _queue[_rear++] = item;
+	_queue[_rear++] = item;
     }
 
     // Delete one element from front
@@ -89,9 +89,8 @@ public:
 private:
     void extend() {
         T* buffer = new T[capacity * 2];
-        for(int i = 0;i < _rear - _front;i++) buffer[i] = _queue[_front + i];
+        for(int i = 0; i < _rear - _front; i++) buffer[i] = _queue[_front + i];
         delete [] _queue;
-
         _queue = buffer; 
         _rear -= _front;
         _front = 0;
@@ -102,12 +101,10 @@ private:
     int capacity;
 };
 
-BaseQueue<char> *Q = nullptr;
+BaseQueue<char> *Q = new BaseQueue<char>[100];
 BaseStack<string> *S = new BaseStack<string>();
 // TODO: Implement five types of command
 void insert(int L) {
-    if(Q == nullptr) Q = new BaseQueue<char>[L];
-
     int offset;
     string name; 
     cin >> offset >> name;
@@ -123,7 +120,7 @@ void insert(int L) {
 string first_row(int L, bool print = false) {
     string ans;
     for(int i = 0; i < L; i++) ans += (Q[i].empty() ? '~' : Q[i].front());
-    if(print) cout << "BOTTO_ROW" << endl << ans << endl;
+    if(print) cout << "BOTTOM_ROW" << endl << ans << endl;
     return ans;
 }
 void query(int L) {
@@ -135,6 +132,7 @@ void query(int L) {
         if(j == name.length()) {
             for(j = i; j < i + name.length(); j++) Q[j].pop();
             S->push(name);
+            break;
         }
     }
 }
