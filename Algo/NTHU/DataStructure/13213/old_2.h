@@ -30,7 +30,7 @@ void msort(int l, int r) {
 }
 
 void solve() {
-    long long N, L, R, C, ans, M = 0, temp;
+    long long N, L, R, C, ans, M = 0;
 
     cin >> N >> L >> R >> C;
     memset(count, 0, sizeof(count));
@@ -49,23 +49,11 @@ void solve() {
     }
     for(int i = 0;i < M;i++) for(int j = 0;j < 2;j++) {
         x[j][0] += count[i][j] - count[i][j] / 2 * 2;
-        x[j][1] += count[i][j] / 2 * 2;
+        x[j][1] += count[i][j];
     }
-    // cout << x[0][0] << " " << x[0][1] << endl << x[1][0] << " " << x[1][1] << endl;
-    
-    ans = temp = min(x[0][0], x[1][0]);
-    x[0][0] -= temp;
-    x[1][0] -= temp;
-
-    ans += min(x[0][1], x[1][0]) + min(x[0][0], x[1][1]);
-    temp = min(x[0][1], x[1][0]);
-    x[0][1] -= temp;
-    x[1][0] -= temp;
-    temp = min(x[0][0], x[1][1]);
-    x[0][0] -= temp;
-    x[1][1] -= temp;
-
-    ans += x[0][0] + x[1][0] + (x[0][1] + x[1][1]) / 2;
+    if(x[0][1] < x[1][1]) swap(x[0], x[1]);
+    if(x[0][0] > x[1][1]) ans = (x[0][0] + x[0][1]) >> 1;
+    else ans = (x[0][1] + x[1][1]) >> 1;
 
     cout << ans * C << endl;
 }
