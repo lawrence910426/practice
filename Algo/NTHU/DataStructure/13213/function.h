@@ -44,8 +44,9 @@ void solve() {
     msort(0, N);
     for(int i = 0;i < N;i++) count[i + 1 < N && gem[i].val == gem[i + 1].val ? M : M++][gem[i].idx >= L ? 1 : 0] += 1;
     for(int i = 0;i < M;i++) {
-        count[i][0] -= min(count[i][0], count[i][1]);
-        count[i][1] -= min(count[i][0], count[i][1]);
+        temp = min(count[i][0], count[i][1]);
+        count[i][0] -= temp;
+        count[i][1] -= temp;
     }
     for(int i = 0;i < M;i++) for(int j = 0;j < 2;j++) {
         x[j][0] += count[i][j] - count[i][j] / 2 * 2;
