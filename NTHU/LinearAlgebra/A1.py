@@ -48,7 +48,10 @@ def SolveLP(A, b, G):
     for idx in lst:
         Ai = A[idx, :]
         bi = b[idx]
-        xi = np.linalg.solve(Ai, bi)
+        try:
+            xi = np.linalg.solve(Ai, bi)
+        except:
+            continue
         
         # step 2: check the feasibility of the itersection point
         feasible = 1
@@ -75,9 +78,34 @@ def SolveLP(A, b, G):
 #-------------------------------#
 # Put all the coefficients of the constrains into a matrix A and a vector b
 
-A = np.array([[1,1],[10,1],[2,14]])
-b = np.array([6, 50, 40])
-G = np.array([12, 15, 10])
+A = np.array([
+    [1,     0,      0,      0],
+    [-1,    0,      0,      0],
+    [0,     1,      0,      0],
+    [0,     -1,     0,      0],
+    [0,     0,      1,      0],
+    [0,     0,      -1,     0],
+    [0,     0,      0,      1],
+    [0,     0,      0,      -1],
+    [0,     5,      10,     3]
+])
+b = np.array([
+    1000, 
+    -300, 
+    5,
+    -1,
+    3,
+    -1,
+    1000,
+    -50,
+    2000
+])
+G = np.array([
+    np.log(1 + 0.001), 
+    np.log(1 + 0.01), 
+    np.log(1 + 0.03),
+    np.log(1 + 0.015)
+])
 
 # solve this problem
 [x, maxg] = SolveLP(A, b, G)
